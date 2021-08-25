@@ -40,7 +40,7 @@
                 style="@style/titleTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageViewProduct"
+                android:layout_below="@id/imageImgView"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="4dp"
                 android:maxLines="4"
