@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
         bottomNavigationView.setupWithNavController(navController)
 
-        // Setup the ActionBar with navController and 3 top level destinations
+        // Setup the ActionBar with navController and 2 top level destinations
         appBarConfiguration = AppBarConfiguration(setOf(R.id.home, R.id.favorite))
         setupActionBarWithNavController(navController, appBarConfiguration)
 
