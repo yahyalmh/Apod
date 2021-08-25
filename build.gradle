@@ -26,6 +26,9 @@ ext {
     //Hilt
     hilt_version = '2.38.1'
 
+    //Navigation
+    nav_version = "2.3.5"
+
     // Testing library
     JunitVersion = '4.13.2'
     androidxJunitVersion = '1.1.3'

@@ -48,6 +48,16 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$rootProject.hilt_version"
     kapt "com.google.dagger:hilt-compiler:$rootProject.hilt_version"
 
+    //Navigation
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.nav_version"
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.nav_version"
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.nav_version"
+
+
     // Testing
     testImplementation "junit:junit:$rootProject.JunitVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
