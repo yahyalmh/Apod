@@ -23,11 +23,16 @@ ext {
     materialVersion = '1.4.0'
     constraintlayoutVersion = '2.1.0'
 
-    //Hilt
+    // Hilt
     hilt_version = '2.38.1'
 
-    //Navigation
+    // Navigation
     nav_version = "2.3.5"
+
+    // Room
+    room_version = "2.3.0"
+    room_pagination_version = "2.4.0-alpha04"
+
 
     // Testing library
     JunitVersion = '4.13.2'

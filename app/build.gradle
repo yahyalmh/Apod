@@ -62,6 +62,15 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.nav_version"
 
+    //Room
+    implementation "androidx.room:room-runtime:$rootProject.room_version"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.room_version"
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$rootProject.room_version")
+    Test helpers
+    testImplementation("androidx.room:room-testing:$rootProject.room_version")
+    // optional - Paging 3 Integration
+    // implementation("androidx.room:room-paging:$rootProject.room_pagination_version")
 
     // Testing
     testImplementation "junit:junit:$rootProject.JunitVersion"
