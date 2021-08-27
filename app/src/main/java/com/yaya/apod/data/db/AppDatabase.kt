@@ -2,8 +2,8 @@ package com.yaya.apod.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.yaya.apod.data.dao.ImageDao
-import com.yaya.apod.data.dao.VideoDao
+import com.yaya.apod.data.db.dao.ImageDao
+import com.yaya.apod.data.db.dao.VideoDao
 import com.yaya.apod.data.model.Image
 import com.yaya.apod.data.model.Video
 

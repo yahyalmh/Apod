@@ -1,11 +1,10 @@
-package com.yaya.apod.data.dao
+package com.yaya.apod.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.yaya.apod.data.model.Video
-import java.util.*
 
 @Dao
 interface VideoDao {
@@ -22,5 +21,5 @@ interface VideoDao {
     fun getById(id: Int): List<Video>
 
     @Query("SELECT * FROM videos where date>=:start and date<=:end")
-    fun getByDate(start: Date, end: Date): List<Video>
+    fun getByDate(start: String, end: String): List<Video>
 }
