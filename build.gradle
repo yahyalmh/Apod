@@ -24,14 +24,21 @@ ext {
     constraintlayoutVersion = '2.1.0'
 
     // Hilt
-    hilt_version = '2.38.1'
+    hiltVersion = '2.38.1'
 
     // Navigation
-    nav_version = "2.3.5"
+    navVersion = "2.3.5"
 
     // Room
-    room_version = "2.3.0"
+    roomVersion = "2.3.0"
     room_pagination_version = "2.4.0-alpha04"
+
+    //Retrofit
+    retrofitVersion = '2.9.0'
+    okhttpLoggingVersion = '4.7.2'
+
+    //Gson
+    gsonVersion = '2.8.7'
 
 
     // Testing library

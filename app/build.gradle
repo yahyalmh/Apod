@@ -15,9 +15,13 @@ android {
         minSdk 21
         targetSdk 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
+        versionCode = 100
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Apod api key
+        buildConfigField("String", "APOD_API_KEY", "\"" + getApodApiKey() + "\"")
     }
 
     buildTypes {
@@ -40,6 +44,11 @@ android {
     }
 }
 
+def getApodApiKey() {
+    // Read the Apod api key from gradle.properties file
+    return project.findProperty("APOD_API_KEY")
+}
+
 // Allow references to generated code
 kapt {
     correctErrorTypes true
@@ -55,27 +64,36 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintlayoutVersion"
 
     //Hilt
-    implementation "com.google.dagger:hilt-android:$rootProject.hilt_version"
-    kapt "com.google.dagger:hilt-compiler:$rootProject.hilt_version"
+    implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$rootProject.hiltVersion"
 
     //Navigation
     // Kotlin
-    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navVersion"
     // Feature module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.navVersion"
     // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.nav_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.navVersion"
 
     //Room
-    implementation "androidx.room:room-runtime:$rootProject.room_version"
-    annotationProcessor "androidx.room:room-compiler:$rootProject.room_version"
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     // To use Kotlin annotation processing tool (kapt)
-    kapt("androidx.room:room-compiler:$rootProject.room_version")
+    kapt("androidx.room:room-compiler:$rootProject.roomVersion")
     Test helpers
-    testImplementation("androidx.room:room-testing:$rootProject.room_version")
+    testImplementation("androidx.room:room-testing:$rootProject.roomVersion")
     // optional - Paging 3 Integration
     // implementation("androidx.room:room-paging:$rootProject.room_pagination_version")
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpLoggingVersion"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
+
+    //Gson
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
 
     // Testing
     testImplementation "junit:junit:$rootProject.JunitVersion"

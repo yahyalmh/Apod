@@ -1,6 +1,8 @@
 package com.yaya.apod.ui
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -10,8 +12,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.yaya.apod.R
+import com.yaya.apod.api.ApodResponse
+import com.yaya.apod.api.ApodService
 import com.yaya.apod.data.db.AppDatabase
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,6 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var apodService: ApodService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
