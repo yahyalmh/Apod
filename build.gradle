@@ -1,11 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.5.21'
+    ext.kotlin_version = '1.5.30'
     ext.hilt_plugin_version = '2.38.1'
 
     repositories {
-        google()
         mavenCentral()
+        google()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.1"
@@ -38,7 +38,10 @@ ext {
     okhttpLoggingVersion = '4.7.2'
 
     //Gson
-    gsonVersion = '2.8.7'
+    gsonVersion = '2.8.8'
+
+    //Picasso
+    picassoVersion = "2.8"
 
 
     // Testing library
