@@ -15,6 +15,7 @@ import com.yaya.apod.R
 import com.yaya.apod.api.ApodResponse
 import com.yaya.apod.api.ApodService
 import com.yaya.apod.data.db.AppDatabase
+import com.yaya.apod.data.repo.ApodRepository
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,9 +29,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var database: AppDatabase
-
-    @Inject
-    lateinit var apodService: ApodService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
