@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.squareup.picasso.Picasso
 import com.yaya.apod.databinding.FragmentHomeBinding
+import com.yaya.apod.ui.adapters.PictureAdapter
+import com.yaya.apod.viewmodels.PicturesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
+    private val viewModel: PicturesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,12 +24,24 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        binding!!.listView.layoutManager = LinearLayoutManager(activity)
+
+        val adapter = PictureAdapter()
+        binding!!.listView.adapter = adapter
+        subscribeUi(adapter)
+
         return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView = binding!!.recyclerView
-        binding!!.recyclerView.layoutManager = LinearLayoutManager(activity)
+        val recyclerView = binding!!.listView
+    }
+
+    private fun subscribeUi(adapter: PictureAdapter) {
+        viewModel.content.observe(viewLifecycleOwner) {
+            adapter.submitData(mutableListOf(it))
+        }
 
     }
 

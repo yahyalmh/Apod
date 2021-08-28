@@ -16,8 +16,8 @@
 
             <ImageView
                 android:id="@+id/imageImgView"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
@@ -31,7 +31,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="2dp"
+                android:layout_margin="4dp"
+                android:padding="4dp"
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_favorite" />
 

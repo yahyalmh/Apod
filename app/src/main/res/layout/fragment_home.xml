@@ -5,7 +5,11 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingEnd="@dimen/card_side_margin"
+        android:paddingStart="@dimen/card_side_margin"
+        android:paddingTop="@dimen/header_margin"/>
 </LinearLayout>
