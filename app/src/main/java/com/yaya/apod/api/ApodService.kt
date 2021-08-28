@@ -17,6 +17,13 @@ interface ApodService {
     fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY):
             LiveData<ApiResponse<ApodResponse>>
 
+    @GET("apod")
+    fun getContentWithData(
+        @Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY,
+        @Query("start_date") startDate: String,
+//        @Query("end_date") endDate: String
+    ): LiveData<ApiResponse<MutableList<ApodResponse>>>
+
     companion object {
         private const val BASE_URL = "https://api.nasa.gov/planetary/"
 

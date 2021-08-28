@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -11,13 +11,13 @@
         app:cardCornerRadius="5pt">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imageImgView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
@@ -43,10 +43,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageImgView"
                 android:layout_centerHorizontal="true"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="7dp"
                 android:maxLines="4"
-                android:minLines="4"
-                android:textSize="12sp"
+                android:minLines="1"
+                android:textSize="17sp"
+                android:textColor="@color/white"
                 tools:text="sample title" />
 
         </RelativeLayout>

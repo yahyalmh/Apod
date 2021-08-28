@@ -8,4 +8,8 @@ import javax.inject.Singleton
 class ApodRepository @Inject constructor(private val apodService: ApodService) {
 
     fun getTodayContent() = apodService.getTodayContent()
+
+
+    fun getContentWithDate(startDate: String, endDate: String) =
+        apodService.getContentWithData(startDate = startDate)
 }
