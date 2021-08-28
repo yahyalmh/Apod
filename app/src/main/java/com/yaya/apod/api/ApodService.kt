@@ -1,12 +1,12 @@
 package com.yaya.apod.api
 
+import androidx.lifecycle.LiveData
 import com.yaya.apod.BuildConfig
+import com.yaya.apod.api.calladapter.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
-import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,7 +14,8 @@ import retrofit2.http.Query
 interface ApodService {
 
     @GET("apod")
-    fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY): Call<ApodResponse>
+    fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY):
+            LiveData<ApiResponse<ApodResponse>>
 
     companion object {
         private const val BASE_URL = "https://api.nasa.gov/planetary/"
@@ -27,7 +28,8 @@ interface ApodService {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApodService::class.java)
