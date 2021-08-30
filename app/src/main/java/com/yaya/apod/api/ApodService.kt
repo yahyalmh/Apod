@@ -1,8 +1,11 @@
-package com.yaya.apod.api
+package com.yaya.apod.data.model
 
 import androidx.lifecycle.LiveData
 import com.yaya.apod.BuildConfig
+import com.yaya.apod.api.ApiResponse
+import com.yaya.apod.api.ApodResponse
 import com.yaya.apod.api.calladapter.LiveDataCallAdapterFactory
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
@@ -15,13 +18,19 @@ interface ApodService {
 
     @GET("apod")
     fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY):
-            LiveData<ApiResponse<ApodResponse>>
+            Flow<ApiResponse<ApodResponse>>
 
     @GET("apod")
-    fun getContentWithData(
+    fun getContents(
         @Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY,
         @Query("start_date") startDate: String,
-//        @Query("end_date") endDate: String
+    ): Flow<ApiResponse<MutableList<ApodResponse>>>
+
+    @GET("apod")
+    fun getContents(
+        @Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY,
+        @Query("start_date") startDate: String,
+        @Query("end_date") endDate: String
     ): LiveData<ApiResponse<MutableList<ApodResponse>>>
 
     companion object {

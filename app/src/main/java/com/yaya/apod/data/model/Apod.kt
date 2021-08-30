@@ -1,33 +1,44 @@
-package com.yaya.apod.api
+package com.yaya.apod.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "apod")
 data class ApodResponse(
 
     @field:SerializedName("copyright")
     @field:Expose
-    val copyright: String,
+    @ColumnInfo(name = "copyright")
+    val copyright: String?,
 
     @field:SerializedName("date")
+    @ColumnInfo(name = "date")
     val date: String,
 
     @field:SerializedName("explanation")
+    @ColumnInfo(name = "explanation")
     val explanation: String,
 
     @field:SerializedName("hdurl")
-    @Expose
-    val hdUrl: String,
+    @field:Expose
+    @ColumnInfo(name = "hdurl")
+    val hdUrl: String?,
 
     @field:SerializedName("media_type")
+    @ColumnInfo(name = "media_type")
     val mediaType: String,
 
     @field:SerializedName("service_version")
+    @ColumnInfo(name = "service_version")
     val serviceVersion: String,
 
     @field:SerializedName("title")
+    @ColumnInfo(name = "title")
     val title: String,
 
     @field:SerializedName("url")
+    @ColumnInfo(name = "url")
     val url: String
 )
