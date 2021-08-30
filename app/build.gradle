@@ -38,9 +38,10 @@ android {
         jvmTarget = '1.8'
     }
 
-    // Enable view binding
+    // Enable view binding and data binding
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 }
 
@@ -59,15 +60,20 @@ dependencies {
     implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
 
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion")
+    // Test helper for LiveData
+    testImplementation("androidx.arch.core:core-testing:$rootProject.archVersion")
+
     // Ui
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintlayoutVersion"
 
-    //Hilt
+    // Hilt
     implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
     kapt "com.google.dagger:hilt-compiler:$rootProject.hiltVersion"
 
-    //Navigation
+    // Navigation
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navVersion"
@@ -76,27 +82,33 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.navVersion"
 
-    //Room
+    // Room
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     // To use Kotlin annotation processing tool (kapt)
-    kapt("androidx.room:room-compiler:$rootProject.roomVersion")
-    Test helpers
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    // Test helpers
     testImplementation("androidx.room:room-testing:$rootProject.roomVersion")
     // optional - Paging 3 Integration
     // implementation("androidx.room:room-paging:$rootProject.room_pagination_version")
 
-    //Retrofit
+    // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpLoggingVersion"
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-    //Gson
+    // Gson
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
 
-    //Picasso
+    // Picasso
     implementation "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+
+    // Lottie
+    implementation "com.airbnb.android:lottie:$rootProject.lottieVersion"
+
 
     // Testing
     testImplementation "junit:junit:$rootProject.JunitVersion"

@@ -23,6 +23,11 @@ ext {
     materialVersion = '1.4.0'
     constraintlayoutVersion = '2.1.0'
 
+    // LiveData
+    lifecycleVersion = "2.4.0-alpha03"
+    // Test helper for live data
+    archVersion = "2.1.0"
+
     // Hilt
     hiltVersion = '2.38.1'
 
@@ -33,16 +38,18 @@ ext {
     roomVersion = "2.3.0"
     room_pagination_version = "2.4.0-alpha04"
 
-    //Retrofit
+    // Retrofit
     retrofitVersion = '2.9.0'
-    okhttpLoggingVersion = '4.7.2'
+    okhttpLoggingVersion = '5.0.0-alpha.2'
 
-    //Gson
+    // Gson
     gsonVersion = '2.8.8'
 
-    //Picasso
+    // Picasso
     picassoVersion = "2.8"
 
+    // Lottie
+    lottieVersion = "3.4.0"
 
     // Testing library
     JunitVersion = '4.13.2'
