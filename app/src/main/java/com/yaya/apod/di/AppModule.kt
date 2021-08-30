@@ -3,6 +3,7 @@ package com.yaya.apod.di
 import android.content.Context
 import androidx.room.Room
 import com.yaya.apod.data.db.AppDatabase
+import com.yaya.apod.data.db.migration.ALL_MIGRATION
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +19,13 @@ class AppModule {
     @Singleton
     fun getDatabase(@ApplicationContext context: Context): AppDatabase {
         val dbName = "app_database"
-        return Room.databaseBuilder(context, AppDatabase::class.java, dbName).build()
+        return Room.databaseBuilder(context, AppDatabase::class.java, dbName)
+            .addMigrations(*ALL_MIGRATION)
+            .build()
     }
+
+    @Singleton
+    @Provides
+    fun provideApodDao(db: AppDatabase) = db.apodDao()
 
 }
