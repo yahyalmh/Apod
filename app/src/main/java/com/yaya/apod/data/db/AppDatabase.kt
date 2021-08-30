@@ -2,13 +2,14 @@ package com.yaya.apod.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.yaya.apod.data.db.dao.ImageDao
-import com.yaya.apod.data.db.dao.VideoDao
-import com.yaya.apod.data.model.Image
-import com.yaya.apod.data.model.Video
+import com.yaya.apod.data.db.dao.ApodDao
+import com.yaya.apod.data.model.Apod
 
-@Database(entities = [Image::class, Video::class], version = 1)
+@Database(
+    entities = [Apod::class],
+    version = 3,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun imageDao(): ImageDao
-    abstract fun videoDao(): VideoDao
+    abstract fun apodDao(): ApodDao
 }
