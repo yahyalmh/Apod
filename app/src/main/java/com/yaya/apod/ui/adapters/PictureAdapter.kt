@@ -1,96 +1,169 @@
 package com.yaya.apod.ui.adapters
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.yaya.apod.api.ApodResponse
-import com.yaya.apod.databinding.ImageListItemBinding
-import com.yaya.apod.databinding.VideoListItemBinding
+import com.yaya.apod.R
+import com.yaya.apod.api.MediaType
+import com.yaya.apod.data.model.Apod
+import com.yaya.apod.databinding.HomeListItemBinding
+import com.yaya.apod.util.CustomClickListener
+import com.yaya.apod.util.Util
+import dagger.hilt.android.scopes.ActivityScoped
 
 
-class PictureAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var data: MutableList<ApodResponse> = mutableListOf()
+@ActivityScoped
+class PictureAdapter : RecyclerView.Adapter<PictureAdapter.ViewHolder>() {
+    private var data: MutableList<Apod> = mutableListOf()
+    private lateinit var delegate: ItemChangeDelegate
 
+    interface ItemChangeDelegate {
+        fun itemChanged(item: Apod)
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    fun setDelegate(delegate: ItemChangeDelegate) {
+        this.delegate = delegate
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         lateinit var view: ViewBinding
-
-        if (viewType == 1) {
-            view = ImageListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        } else if (viewType == 2) {
-            view = VideoListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        }
+        view = HomeListItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        (holder as ViewHolder).bind(item)
+        holder.bind(item)
+
+        holder.binding.favoriteImgView.setOnClickListener {
+            holder.item.favorite = !holder.item.favorite
+            holder.toggleFavorite()
+            delegate.itemChanged(holder.item)
+        }
+
+        holder.binding.root.setOnClickListener(object : CustomClickListener() {
+            override fun onDoubleClick() {
+                holder.item.favorite = !holder.item.favorite
+                holder.toggleFavorite()
+                delegate.itemChanged(holder.item)
+
+                val scaleDownX =
+                    ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleX", 0.5f)
+                val scaleDownY =
+                    ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleY", 0.5f)
+                scaleDownX.duration = 200
+                scaleDownY.duration = 200
+
+                val scaleUpX = ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleX", 1f)
+                val scaleUpY = ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleY", 1f)
+                scaleUpX.duration = 200
+                scaleUpY.duration = 200
+
+                val animatorSet = AnimatorSet()
+                if (holder.item.favorite) {
+                    animatorSet.playSequentially(scaleUpX, scaleUpY, scaleDownX, scaleDownY)
+//                    animatorSet.playTogether(scaleDownX, scaleDownY)
+                } else {
+                    animatorSet.playSequentially(scaleDownX, scaleDownY, scaleUpX, scaleUpY)
+//                    animatorSet.playTogether(scaleUpX, scaleUpY)
+                }
+                animatorSet.start()
+            }
+
+            override fun onSingleClick() {
+                Log.v("TAGsdfsd", "Single Clicke")
+            }
+
+        })
     }
 
     override fun getItemCount(): Int {
         return data.size
     }
 
-    override fun getItemViewType(position: Int): Int {
-        val item = data[position]
-        return if (item.mediaType == "image") {
-            1
-        } else {
-            2
-        }
 
-    }
-
-    class ViewHolder(private val binding: ViewBinding) :
+    class ViewHolder(val binding: HomeListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        lateinit var item: Apod
+
         init {
+
             binding.root.setOnClickListener {
 //                navigateToPlant(plant, it)
             }
         }
 
-        fun bind(item: ApodResponse) {
+        fun toggleFavorite() {
+            binding.isFavorite = item.favorite
+            binding.invalidateAll()
+        }
+
+        fun bind(item: Apod) {
+            this.item = item
             binding.apply {
-                if (this is ImageListItemBinding) {
+                isNew = item.date == Util.getTodayDate()
+                isLoading = true
+                titleTxtView.text = item.title
+                isFavorite = item.favorite
+                type = item.mediaType
+
+                if (item.mediaType == MediaType.IMAGE.type) {
                     Picasso.get()
                         .load(item.hdUrl)
                         .fit()
-                        .centerCrop()
-                        .into(this.imageImgView)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.ic_error)
+                        .into(imageImgView, object : Callback {
+                            override fun onSuccess() {
+                                isLoading = false
+                            }
 
-                    this.titleTxtView.text = item.title
+                            override fun onError(e: Exception?) {
+                                isLoading = false
+                            }
+                        })
+
                 } else {
                     val frameVideo =
                         "<html><body><iframe width=\"100%\" height=\"100%\" src=\"${item.url}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
-                    val videoListItemBinding = this as VideoListItemBinding
-                    val webView = videoListItemBinding.webView
-                    videoListItemBinding.titleTxtView.text = item.title
-                    val webSettings: WebSettings = webView.settings
-                    webSettings.javaScriptEnabled = true
-                    webView.webChromeClient = WebChromeClient()
-                    webView.loadData(frameVideo, "text/html", "utf-8")
+                    webView.settings.javaScriptEnabled = true
+                    webView.webViewClient = object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                            view.loadUrl(url)
+                            return true
+                        }
 
+                        override fun onPageFinished(view: WebView, url: String) {
+                            super.onPageFinished(view, url)
+                            binding.isLoading = false
+                        }
+                    }
+                    webView.loadData(frameVideo, "text/html", "utf-8")
                 }
             }
         }
     }
 
-    fun submitData(data: MutableList<ApodResponse>) {
-        this.data.clear()
+    fun submitData(data: MutableList<Apod>) {
+//        this.data.clear()
         this.data = data
         notifyDataSetChanged()
+    }
+
+    fun addData(data: Apod) {
+        this.data.add(0, data)
+        notifyItemInserted(0)
     }
 }
