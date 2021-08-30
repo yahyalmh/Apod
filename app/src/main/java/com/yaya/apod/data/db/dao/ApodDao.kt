@@ -1,25 +1,35 @@
 package com.yaya.apod.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import com.yaya.apod.data.model.Image
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.yaya.apod.data.model.Apod
 
 @Dao
-interface ImageDao {
+interface ApodDao {
     @Insert
-    fun insertAll(vararg images: Image)
+    fun insertAll(vararg apods: Apod)
+
+    @Insert
+    fun insert(apod: Apod)
+
+    @Update
+    suspend fun update(apod: Apod)
 
     @Delete
-    fun delete(image: Image)
+    suspend fun delete(apod: Apod)
 
-    @Query("SELECT * FROM images")
-    fun getAll(): List<Image>
+    @Query("SELECT * FROM apod")
+    fun getAll(): LiveData<MutableList<Apod>>
 
-    @Query("SELECT * FROM images where id==:id")
-    fun getById(id: Int): List<Image>
+    @Query("SELECT * FROM apod where id==:id")
+    fun getById(id: Int): LiveData<Apod>
 
-    @Query("SELECT * FROM images where date>=:start and date<=:end")
-    fun getByDate(start: String, end: String): List<Image>
+    @Query("SELECT * FROM apod where date>=:start and date<=:end order by date")
+    fun getByDatePeriod(start: String, end: String): LiveData<MutableList<Apod>>
+
+    @Query("SELECT * FROM apod where date<=:start order by date desc limit :count")
+    fun getByDateCount(start: String, count: Int): LiveData<MutableList<Apod>>
+
+    @Query("SELECT * FROM apod where date==:date")
+    fun getByDate(date: String): LiveData<Apod>
 }
