@@ -109,6 +109,10 @@ dependencies {
     // Lottie
     implementation "com.airbnb.android:lottie:$rootProject.lottieVersion"
 
+    // Paging
+    implementation "androidx.paging:paging-runtime:$rootProject.pagingVersion"
+    // optional - Jetpack Compose integration
+    implementation "androidx.paging:paging-compose:$rootProject.pagingComposeVersion"
 
     // Testing
     testImplementation "junit:junit:$rootProject.JunitVersion"

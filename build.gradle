@@ -51,6 +51,10 @@ ext {
     // Lottie
     lottieVersion = "3.4.0"
 
+    // Paging
+    pagingVersion = "3.0.1"
+    pagingComposeVersion = "1.0.0-alpha12"
+
     // Testing library
     JunitVersion = '4.13.2'
     androidxJunitVersion = '1.1.3'
