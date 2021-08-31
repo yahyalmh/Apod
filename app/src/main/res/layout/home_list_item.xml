@@ -9,6 +9,8 @@
 
         <import type="com.yaya.apod.api.MediaType" />
 
+        <import type="com.yaya.apod.ui.component.FavoriteImageView"/>
+
         <variable
             name="type"
             type="String" />
@@ -74,7 +76,7 @@
                     android:src="@drawable/ic_new"
                     android:visibility="@{isNew ? View.VISIBLE : View.GONE}" />
 
-                <ImageView
+                <com.yaya.apod.ui.component.FavoriteImageView
                     android:id="@+id/favoriteImgView"
                     android:layout_width="51dp"
                     android:layout_height="48dp"

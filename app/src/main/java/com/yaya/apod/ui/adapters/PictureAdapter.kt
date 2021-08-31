@@ -1,12 +1,11 @@
 package com.yaya.apod.ui.adapters
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.squareup.picasso.Callback
@@ -21,7 +20,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 
 
 @ActivityScoped
-class PictureAdapter : RecyclerView.Adapter<PictureAdapter.ViewHolder>() {
+class PictureAdapter : PagingDataAdapter<Apod, PictureAdapter.ViewHolder>(ApodDiffCallback()) {
     private var data: MutableList<Apod> = mutableListOf()
     private lateinit var delegate: ItemChangeDelegate
 
@@ -47,46 +46,7 @@ class PictureAdapter : RecyclerView.Adapter<PictureAdapter.ViewHolder>() {
         val item = data[position]
         holder.bind(item)
 
-        holder.binding.favoriteImgView.setOnClickListener {
-            holder.item.favorite = !holder.item.favorite
-            holder.toggleFavorite()
-            delegate.itemChanged(holder.item)
-        }
 
-        holder.binding.root.setOnClickListener(object : CustomClickListener() {
-            override fun onDoubleClick() {
-                holder.item.favorite = !holder.item.favorite
-                holder.toggleFavorite()
-                delegate.itemChanged(holder.item)
-
-                val scaleDownX =
-                    ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleX", 0.5f)
-                val scaleDownY =
-                    ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleY", 0.5f)
-                scaleDownX.duration = 200
-                scaleDownY.duration = 200
-
-                val scaleUpX = ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleX", 1f)
-                val scaleUpY = ObjectAnimator.ofFloat(holder.binding.favoriteImgView, "scaleY", 1f)
-                scaleUpX.duration = 200
-                scaleUpY.duration = 200
-
-                val animatorSet = AnimatorSet()
-                if (holder.item.favorite) {
-                    animatorSet.playSequentially(scaleUpX, scaleUpY, scaleDownX, scaleDownY)
-//                    animatorSet.playTogether(scaleDownX, scaleDownY)
-                } else {
-                    animatorSet.playSequentially(scaleDownX, scaleDownY, scaleUpX, scaleUpY)
-//                    animatorSet.playTogether(scaleUpX, scaleUpY)
-                }
-                animatorSet.start()
-            }
-
-            override fun onSingleClick() {
-                Log.v("TAGsdfsd", "Single Clicke")
-            }
-
-        })
     }
 
     override fun getItemCount(): Int {
@@ -94,20 +54,34 @@ class PictureAdapter : RecyclerView.Adapter<PictureAdapter.ViewHolder>() {
     }
 
 
-    class ViewHolder(val binding: HomeListItemBinding) :
+    inner class ViewHolder(val binding: HomeListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         lateinit var item: Apod
 
         init {
-
-            binding.root.setOnClickListener {
-//                navigateToPlant(plant, it)
+            binding.favoriteImgView.setOnClickListener {
+                toggleFavorite()
             }
+
+            binding.root.setOnClickListener(object : CustomClickListener() {
+                override fun onDoubleClick() {
+                    toggleFavorite()
+                }
+
+                override fun onSingleClick() {
+                    //   navigateToPlant(plant, it)
+                }
+
+            })
         }
 
-        fun toggleFavorite() {
+        private fun toggleFavorite() {
+            item.favorite = !item.favorite
+            binding.favoriteImgView.setFavorite(item.favorite)
+            binding.favoriteImgView.startAnimation()
             binding.isFavorite = item.favorite
             binding.invalidateAll()
+            delegate.itemChanged(item)
         }
 
         fun bind(item: Apod) {
@@ -165,5 +139,16 @@ class PictureAdapter : RecyclerView.Adapter<PictureAdapter.ViewHolder>() {
     fun addData(data: Apod) {
         this.data.add(0, data)
         notifyItemInserted(0)
+    }
+
+    private class ApodDiffCallback() : DiffUtil.ItemCallback<Apod>() {
+        override fun areItemsTheSame(oldItem: Apod, newItem: Apod): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Apod, newItem: Apod): Boolean {
+            return oldItem == newItem
+        }
+
     }
 }
