@@ -6,10 +6,10 @@ import com.yaya.apod.data.model.Apod
 
 @Dao
 interface ApodDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg apods: Apod)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(apod: Apod)
 
     @Update

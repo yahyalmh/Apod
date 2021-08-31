@@ -18,7 +18,7 @@ class AppModule {
     @Provides
     @Singleton
     fun getDatabase(@ApplicationContext context: Context): AppDatabase {
-        val dbName = "app_database"
+        val dbName = "Apod.db"
         return Room.databaseBuilder(context, AppDatabase::class.java, dbName)
             .addMigrations(*ALL_MIGRATION)
             .build()

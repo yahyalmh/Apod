@@ -22,6 +22,7 @@ class PicturesViewModel @Inject constructor(
 //        savedStateHandle["uid"] ?: throw IllegalArgumentException("missing user id")
 
     private lateinit var _content: LiveData<ApiResponse<Apod>>
+    lateinit var content: LiveData<ApiResponse<MutableList<Apod>>>
 
     fun updateApod(apod: Apod) = viewModelScope.launch {
         apodRepository.updateApod(apod)
@@ -29,8 +30,6 @@ class PicturesViewModel @Inject constructor(
 
     var todayContent = apodRepository.getTodayContent()
     var contents = apodRepository.getContents(Util.getDateAfterToday(1), 10)
-
-    lateinit var content: LiveData<ApiResponse<MutableList<Apod>>>
 
     init {
     }
