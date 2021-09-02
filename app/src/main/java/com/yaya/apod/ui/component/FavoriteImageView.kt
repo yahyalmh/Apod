@@ -5,25 +5,22 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
-import com.yaya.apod.R
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 
 @ActivityScoped
 @AndroidEntryPoint
-class FavoriteImageView @JvmOverloads constructor(@ActivityContext context: Context, attrs: AttributeSet?) :
+class FavoriteImageView @JvmOverloads constructor(
+    @ActivityContext context: Context,
+    attrs: AttributeSet?
+) :
     AppCompatImageView(context, attrs) {
     var isFavorite: Boolean = false
 
     @JvmName("setFavorite1")
     fun setFavorite(state: Boolean) {
         isFavorite = state
-        if (isFavorite) {
-            setImageResource(R.drawable.ic_favorite)
-        } else {
-            setImageResource(R.drawable.ic_not_favorite)
-        }
     }
 
     fun startAnimation() {
