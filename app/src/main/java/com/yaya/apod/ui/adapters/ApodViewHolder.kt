@@ -11,7 +11,7 @@ import com.yaya.apod.api.MediaType
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.databinding.HomeListItemBinding
 import com.yaya.apod.util.CustomClickListener
-import com.yaya.apod.util.Util
+import com.yaya.apod.util.DateUtil
 
 class ApodViewHolder(private val binding: HomeListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -28,14 +28,18 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
 
 
     fun bind(item: Apod) {
+        if (this::item.isInitialized && item.id == this.item.id) {
+            return
+        }
+
         this.item = item
         binding.apply {
-            isNew = item.date == Util.getTodayDate()
-            isLoading = true
+            isNew = item.date == DateUtil.todayDate()
             titleTxtView.text = item.title
             isFavorite = item.favorite
             type = item.mediaType
 
+            isLoading = true
             if (item.mediaType == MediaType.IMAGE.type) {
                 fetchImage(item.url)
             } else {
@@ -86,7 +90,7 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
         binding.favoriteImgView.setFavorite(item.favorite)
         binding.favoriteImgView.startAnimation()
         binding.isFavorite = item.favorite
-        binding.invalidateAll()
+//        binding.favoriteImgView.invalidate()
         delegate.itemChanged(item)
     }
 
