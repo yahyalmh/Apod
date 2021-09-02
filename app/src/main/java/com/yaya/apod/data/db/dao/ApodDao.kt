@@ -1,13 +1,17 @@
 package com.yaya.apod.data.db.dao
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.yaya.apod.data.model.Apod
 
 @Dao
 interface ApodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg apods: Apod)
+    fun insertArray(vararg apods: Apod)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertList(apods: List<Apod>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(apod: Apod)
@@ -15,11 +19,14 @@ interface ApodDao {
     @Update
     suspend fun update(apod: Apod)
 
-    @Delete
+    @Delete(entity = Apod::class)
     suspend fun delete(apod: Apod)
 
-    @Query("SELECT * FROM apod")
-    fun getAll(): LiveData<MutableList<Apod>>
+    @Query("DELETE FROM apod where date>=:startDate and date<=:endDate")
+    fun deleteByDate(startDate: String, endDate: String)
+
+    @Query("SELECT * FROM apod order by date desc")
+    fun getAll(): PagingSource<Int, Apod>
 
     @Query("SELECT * FROM apod where id==:id")
     fun getById(id: Int): LiveData<Apod>
@@ -32,4 +39,7 @@ interface ApodDao {
 
     @Query("SELECT * FROM apod where date==:date")
     fun getByDate(date: String): LiveData<Apod>
+
+    @Query("SELECT date FROM apod order by date asc limit 1")
+    fun getLastDate(): String?
 }
