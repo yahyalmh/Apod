@@ -20,8 +20,11 @@ buildscript {
 ext {
     coreKtxVersion = '1.6.0'
     appCompatVersion = '1.3.1'
+
+    // UI
     materialVersion = '1.4.0'
     constraintlayoutVersion = '2.1.0'
+    swiperefreshlayoutVersion = '1.1.0'
 
     // LiveData
     lifecycleVersion = "2.4.0-alpha03"

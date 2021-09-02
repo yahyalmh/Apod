@@ -29,6 +29,15 @@ class Util {
             return simpleDateFormat.format(Date(calendar.timeInMillis))
         }
 
+        fun getDateBeforeDate(date:String, daysCountBeforeDate: Int): String {
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
+            val formattedDate :Date = simpleDateFormat.parse(date)!!
 
+            val calendar = Calendar.getInstance()
+            calendar.time = formattedDate
+            calendar.add(Calendar.DAY_OF_YEAR, -daysCountBeforeDate)
+
+            return  simpleDateFormat.format(Date(calendar.timeInMillis))
+        }
     }
 }
