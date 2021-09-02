@@ -1,5 +1,6 @@
 package com.yaya.apod.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -7,11 +8,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.databinding.HomeListItemBinding
+import com.yaya.apod.ui.adapters.holders.ApodViewHolder
 import dagger.hilt.android.scopes.ActivityScoped
 
 
 @ActivityScoped
-class PictureAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
+class MediaAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
     PagingDataAdapter<Apod, ApodViewHolder>(ApodDiffCallback()) {
     private var data: MutableList<Apod> = mutableListOf()
 
@@ -28,17 +30,18 @@ class PictureAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
     }
 
     override fun onBindViewHolder(holder: ApodViewHolder, position: Int) {
-        val item = data[position]
-        holder.bind(item)
-
-
+        val item = getItem(position)
+        if (item != null) {
+            holder.bind(item)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+//    override fun getItemCount(): Int {
+//        return data.size
+//    }
 
-    fun submitData(data: MutableList<Apod>) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun submitDatas(data: MutableList<Apod>) {
         this.data.clear()
         this.data = data
         notifyDataSetChanged()
@@ -49,9 +52,9 @@ class PictureAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
         notifyItemInserted(index)
     }
 
-    private class ApodDiffCallback() : DiffUtil.ItemCallback<Apod>() {
+    private class ApodDiffCallback : DiffUtil.ItemCallback<Apod>() {
         override fun areItemsTheSame(oldItem: Apod, newItem: Apod): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.title == newItem.title
         }
 
         override fun areContentsTheSame(oldItem: Apod, newItem: Apod): Boolean {

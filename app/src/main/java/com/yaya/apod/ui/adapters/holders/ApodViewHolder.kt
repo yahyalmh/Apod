@@ -1,4 +1,4 @@
-package com.yaya.apod.ui.adapters
+package com.yaya.apod.ui.adapters.holders
 
 import android.annotation.SuppressLint
 import android.webkit.WebView
