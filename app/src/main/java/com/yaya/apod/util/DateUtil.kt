@@ -3,41 +3,43 @@ package com.yaya.apod.util
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Util {
+class DateUtil {
 
     companion object {
+        private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
 
-        fun getTodayDate(): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
+        /**
+         * This method return today's date in "yyyy-MM-dd" format
+         */
+        fun todayDate(): String {
             val calendar = Calendar.getInstance()
             return simpleDateFormat.format(calendar.time);
         }
 
-        fun getDateBeforeToday(daysCountBeforeToday: Int): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
-            val calendar = Calendar.getInstance()
-
-            calendar.add(Calendar.DAY_OF_YEAR, -daysCountBeforeToday)
-            return simpleDateFormat.format(Date(calendar.timeInMillis))
-        }
-
-        fun getDateAfterToday(daysCountAfterToday: Int): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
-            val calendar = Calendar.getInstance()
-
-            calendar.add(Calendar.DAY_OF_YEAR, daysCountAfterToday)
-            return simpleDateFormat.format(Date(calendar.timeInMillis))
-        }
-
-        fun getDateBeforeDate(date:String, daysCountBeforeDate: Int): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
-            val formattedDate :Date = simpleDateFormat.parse(date)!!
-
+        /**
+         * This method get a date in "yyyy-MM-dd" format and a days count and
+         * return the date of the day with days count before the date
+         */
+        fun getDateBeforeDate(date: String, daysCountBeforeDate: Int): String {
+            val formattedDate: Date = simpleDateFormat.parse(date)!!
             val calendar = Calendar.getInstance()
             calendar.time = formattedDate
             calendar.add(Calendar.DAY_OF_YEAR, -daysCountBeforeDate)
 
-            return  simpleDateFormat.format(Date(calendar.timeInMillis))
+            return simpleDateFormat.format(Date(calendar.timeInMillis))
+        }
+
+        /**
+         * This method get a date in "yyyy-MM-dd" format and a days count and
+         * return the date of the day with days count after the date
+         */
+        fun getDateAfterDate(date: String, daysCountAfterDate: Int): String {
+            val formattedDate: Date = simpleDateFormat.parse(date)!!
+            val calendar = Calendar.getInstance()
+            calendar.time = formattedDate
+            calendar.add(Calendar.DAY_OF_YEAR, daysCountAfterDate)
+
+            return simpleDateFormat.format(Date(calendar.timeInMillis))
         }
     }
 }
