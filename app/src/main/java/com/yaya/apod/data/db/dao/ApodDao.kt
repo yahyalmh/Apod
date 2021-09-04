@@ -32,7 +32,7 @@ interface ApodDao {
     fun getById(id: Int): LiveData<Apod>
 
     @Query("SELECT * FROM apod where date>=:start and date<=:end order by date")
-    fun getByDatePeriod(start: String, end: String): LiveData<MutableList<Apod>>
+    fun getByDatePeriod(start: String, end: String): PagingSource<Int, Apod>
 
     @Query("SELECT * FROM apod where date<=:start order by date desc limit :count")
     fun getByDateCount(start: String, count: Int): LiveData<MutableList<Apod>>
@@ -42,4 +42,23 @@ interface ApodDao {
 
     @Query("SELECT date FROM apod order by date asc limit 1")
     fun getLastDate(): String?
+
+    @Query("SELECT date FROM apod order by date desc limit 1")
+    fun getTopDate(): String?
+
+    @Query("SELECT count(*) FROM apod")
+    fun getCount(): Int
+
+    @Query("REPLACE INTO apod (copyright, date, explanation, url, hdurl, media_type, title, service_version) Values (:copyright, :date, :explanation, :url, :hdurl, :media_type, :title, :service_version)")
+    fun replace(
+        copyright: String?,
+        date: String,
+        explanation: String,
+        url: String,
+        hdurl: String?,
+        media_type: String,
+        title: String,
+        service_version: String?
+    )
+
 }
