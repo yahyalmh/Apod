@@ -5,6 +5,9 @@
     <string name="ch_favorite">Favorite fragment</string>
     <string name="title_favorite">Favorite</string>
     <string name="image_description">image</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="grid">Grid</string>
+    <string name="OK">OK</string>
+    <string name="Updated">Already up to date</string>
+    <string name="InternetUnavailable">Internet is not available, check your connection and swipe down to refresh</string>
 </resources>

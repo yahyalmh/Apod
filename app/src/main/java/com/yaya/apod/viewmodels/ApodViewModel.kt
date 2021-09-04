@@ -28,7 +28,6 @@ class ApodViewModel @Inject constructor(
 //    private val userId: String =
 //        savedStateHandle["uid"] ?: throw IllegalArgumentException("missing user id")
 
-    private lateinit var _content: LiveData<ApiResponse<Apod>>
     lateinit var content: LiveData<ApiResponse<MutableList<Apod>>>
 
     private val clearListCh = Channel<Unit>(Channel.CONFLATED)
@@ -37,7 +36,7 @@ class ApodViewModel @Inject constructor(
     fun apods(): Flow<PagingData<Apod>> {
         return flowOf(
             clearListCh.receiveAsFlow().map { PagingData.empty() },
-            dbApodRepository.fetchApodPage().cachedIn(viewModelScope),
+            dbApodRepository.fetchApodPage().cachedIn(viewModelScope)
         ).flattenMerge(2)
     }
 
