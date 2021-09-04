@@ -18,7 +18,7 @@ class DbApodRepository @Inject constructor(
     private val apodDao: ApodDao
 ) {
     companion object {
-        const val DEFAULT_PAGE_SIZE = 7
+        const val DEFAULT_PAGE_SIZE = 8
     }
 
     @ExperimentalPagingApi
