@@ -17,7 +17,7 @@ import retrofit2.http.Query
 interface ApodApi {
 
     @GET("apod")
-    fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY): LiveData<ApiResponse<Apod>>
+    fun getTodayContentLive(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY): LiveData<ApiResponse<Apod>>
 
     @GET("apod")
     fun getContents(
@@ -26,11 +26,14 @@ interface ApodApi {
     ): LiveData<ApiResponse<Array<Apod>>>
 
     @GET("apod")
-    suspend fun getTop(
+    suspend fun getContentByDatePeriod(
         @Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY,
         @Query("start_date") startDate: String,
         @Query("end_date") endDate: String
     ): List<Apod>
+
+    @GET("apod")
+    suspend fun getTodayContent(@Query("api_key") apiKey: String = BuildConfig.APOD_API_KEY): Apod
 
     class ListingResponse(val data: List<Apod>)
 
