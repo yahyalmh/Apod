@@ -1,9 +1,10 @@
 package com.yaya.apod.ui.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -11,12 +12,17 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.yaya.apod.DefaultConfig
+import com.yaya.apod.R
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.data.repo.Status
 import com.yaya.apod.databinding.FragmentHomeBinding
 import com.yaya.apod.ui.adapters.MediaAdapter
 import com.yaya.apod.ui.adapters.MediaLoadStateAdapter
 import com.yaya.apod.ui.adapters.holders.ApodViewHolder
+import com.yaya.apod.ui.component.VerticalSpaceItemDecoration
+import com.yaya.apod.util.AndroidUtils
 import com.yaya.apod.viewmodels.ApodViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -28,16 +34,69 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
     private var binding: FragmentHomeBinding? = null
     private val viewModel: ApodViewModel by viewModels()
     private lateinit var adapter: MediaAdapter
+    private val layoutTypeSharedKey = "isGridLayoutManager"
+    private lateinit var sharedPreferences: SharedPreferences
     private var searchJob: Job? = null
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.home_menu, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val isGridLayoutManager = sharedPreferences.getBoolean(layoutTypeSharedKey, false)
+        menu.findItem(R.id.grid_item).icon = if (isGridLayoutManager) {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
+        } else {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        return if (id == R.id.grid_item) {
+
+            if (binding!!.listView.layoutManager is LinearLayoutManager) {
+                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
+                setRecyclerViewLayoutManager(true)
+            } else {
+                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
+                setRecyclerViewLayoutManager(false)
+            }
+            true
+        } else super.onOptionsItemSelected(item)
+    }
+
+    private fun setRecyclerViewLayoutManager(isGridLayoutManager: Boolean) {
+        binding!!.listView.layoutManager = if (isGridLayoutManager) {
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            LinearLayoutManager(activity)
+        }
+        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = MediaLoadStateAdapter(adapter),
+            footer = MediaLoadStateAdapter(adapter)
+        )
+        sharedPreferences.edit().putBoolean(layoutTypeSharedKey, isGridLayoutManager).apply()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        binding!!.listView.addItemDecoration(VerticalSpaceItemDecoration(20))
+        sharedPreferences = requireContext().getSharedPreferences(
+            DefaultConfig.APP_SHARED_PREF_NAME,
+            Context.MODE_PRIVATE
+        )
+
         initAdapter()
+
+        initRecyclerView()
+
         initSwipeToRefresh()
 //        search(adapter)
 //        subscribeUi(adapter)
@@ -46,13 +105,7 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
     }
 
     private fun initAdapter() {
-        binding!!.listView.layoutManager = LinearLayoutManager(activity)
         adapter = MediaAdapter(this)
-        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = MediaLoadStateAdapter(adapter),
-            footer = MediaLoadStateAdapter(adapter)
-        )
-
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 binding!!.swipeRefresh.isRefreshing =
@@ -78,6 +131,23 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
             // Scroll to top is synchronous with UI updates, even if remote load was triggered.
 //                .collect { binding.list.scrollToPosition(0) }
         }
+    }
+
+    private fun initRecyclerView() {
+        binding!!.listView.addItemDecoration(
+            VerticalSpaceItemDecoration(
+                AndroidUtils.dp(
+                    requireActivity().applicationContext,
+                    5f
+                )
+            )
+        )
+
+        setRecyclerViewLayoutManager(sharedPreferences.getBoolean(layoutTypeSharedKey, false))
+        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = MediaLoadStateAdapter(adapter),
+            footer = MediaLoadStateAdapter(adapter)
+        )
     }
 
     private fun initSwipeToRefresh() {

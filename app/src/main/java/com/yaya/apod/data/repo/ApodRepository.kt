@@ -45,7 +45,7 @@ class ApodRepository @Inject constructor(
             }
 
             override fun createCall(): LiveData<ApiResponse<Apod>> {
-                return apodApi.getTodayContent()
+                return apodApi.getTodayContentLive()
             }
         }.asLiveData()
     }

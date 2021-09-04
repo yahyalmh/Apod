@@ -1,4 +1,4 @@
-package com.yaya.apod.ui.fragments
+package com.yaya.apod.ui.component
 
 import android.graphics.Rect
 import android.view.View
