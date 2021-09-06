@@ -28,6 +28,9 @@ interface ApodDao {
     @Query("SELECT * FROM apod order by date desc")
     fun getAll(): PagingSource<Int, Apod>
 
+    @Query("SELECT * FROM apod where favorite=1 order by date desc")
+    fun getFavorite(): LiveData<MutableList<Apod>>
+
     @Query("SELECT * FROM apod where id==:id")
     fun getById(id: Int): LiveData<Apod>
 

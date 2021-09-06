@@ -37,26 +37,6 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
     private val layoutTypeSharedKey = "isGridLayoutManager"
     private lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.home_menu, menu)
-    }
-
-
-    private fun setRecyclerViewLayoutManager(isGridLayoutManager: Boolean) {
-        binding!!.listView.layoutManager = if (isGridLayoutManager) {
-            GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-        } else {
-            LinearLayoutManager(activity)
-        }
-        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = MediaLoadStateAdapter(adapter),
-            footer = MediaLoadStateAdapter(adapter)
-        )
-        binding!!.needUpKey = false
-        sharedPreferences.edit().putBoolean(layoutTypeSharedKey, isGridLayoutManager).apply()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,7 +63,6 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
 
     private fun initArrowUpKey() {
         binding!!.arrowUp.setOnClickListener {
-
             binding!!.listView.smoothScrollToPosition(0)
         }
     }
@@ -194,6 +173,25 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
 //                adapter.addData(it.data)
 //            }
 //        }
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.home_menu, menu)
+    }
+
+
+    private fun setRecyclerViewLayoutManager(isGridLayoutManager: Boolean) {
+        binding!!.listView.layoutManager = if (isGridLayoutManager) {
+            GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+        } else {
+            LinearLayoutManager(activity)
+        }
+        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = MediaLoadStateAdapter(adapter),
+            footer = MediaLoadStateAdapter(adapter)
+        )
+        binding!!.needUpKey = false
+        sharedPreferences.edit().putBoolean(layoutTypeSharedKey, isGridLayoutManager).apply()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

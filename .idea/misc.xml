@@ -9,6 +9,8 @@
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/round_shape.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1852355072463768" />
+        <entry key="app/src/main/res/layout/favorite_fragment.xml" value="0.13134057971014493" />
+        <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_list.xml" value="0.6726973684210527" />
         <entry key="app/src/main/res/layout/home_list_item.xml" value="0.1" />

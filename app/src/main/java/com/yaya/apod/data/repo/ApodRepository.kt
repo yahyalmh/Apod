@@ -71,4 +71,8 @@ class ApodRepository @Inject constructor(
             }
         }.asLiveData()
     }
+
+    fun getFavorite(): LiveData<MutableList<Apod>> {
+        return apodDao.getFavorite()
+    }
 }

@@ -4,9 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.room.withTransaction
 import com.yaya.apod.api.ApodApi
-import com.yaya.apod.data.db.AppDatabase
 import com.yaya.apod.data.db.dao.ApodDao
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.di.NetworkModule
