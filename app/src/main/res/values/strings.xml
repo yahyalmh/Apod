@@ -4,10 +4,11 @@
     <string name="cd_home">Home fragment</string>
     <string name="ch_favorite">Favorite fragment</string>
     <string name="title_favorite">Favorite</string>
+    <string name="no_favorite_error">"There is no favorite, please choose your favorites from list by clicking on favorite icon or double tap the image"</string>
     <string name="image_description">image</string>
     <string name="loading">Loading…</string>
     <string name="grid">Grid</string>
     <string name="OK">OK</string>
     <string name="Updated">Already up to date</string>
-    <string name="InternetUnavailable">Internet is not available, check your connection and swipe down to refresh</string>
+    <string name="InternetUnavailable">Internet is not available, check your connection and to refresh</string>
 </resources>
