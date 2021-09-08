@@ -1,9 +1,12 @@
 package com.yaya.apod.ui.fragments
 
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,6 +26,7 @@ import com.yaya.apod.util.AndroidUtils
 import com.yaya.apod.util.Constants
 import com.yaya.apod.viewmodels.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment(), ApodViewHolder.ItemDelegate {
@@ -50,6 +54,8 @@ class FavoriteFragment : Fragment(), ApodViewHolder.ItemDelegate {
         initRecyclerView()
 
         initArrowUpKey()
+
+        initToolbarMenu()
 
         return binding!!.root
     }
@@ -116,36 +122,37 @@ class FavoriteFragment : Fragment(), ApodViewHolder.ItemDelegate {
             .apply()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.home_menu, menu)
+    private fun initToolbarMenu() {
+        binding!!.toolbar.inflateMenu(R.menu.home_menu)
+        updateToolbar()
+        binding!!.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.grid_item -> {
+                    if (binding!!.listView.layoutManager is GridLayoutManager) {
+                        setRecyclerViewLayoutManager(false)
+                    } else {
+                        setRecyclerViewLayoutManager(true)
+                    }
+                    updateToolbar()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
+    private fun updateToolbar() {
+        val menu = binding!!.toolbar.menu
         val isGridLayoutManager =
             sharedPreferences.getBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, false)
+
         menu.findItem(R.id.grid_item).icon = if (isGridLayoutManager) {
             AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
         } else {
             AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        return if (id == R.id.grid_item) {
-
-            if (binding!!.listView.layoutManager is GridLayoutManager) {
-                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
-                setRecyclerViewLayoutManager(false)
-            } else {
-                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
-                setRecyclerViewLayoutManager(true)
-            }
-            true
-        } else super.onOptionsItemSelected(item)
     }
 
 
