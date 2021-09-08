@@ -71,7 +71,7 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
             }
         }
 
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launchWhenCreated {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.distinctUntilChanged { old, new ->
                     (old.refresh is LoadState.Error && new.refresh is LoadState.Error && ((old.refresh as LoadState.Error).error == (new.refresh as LoadState.Error).error))
