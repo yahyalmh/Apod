@@ -5,11 +5,13 @@
       <map>
         <entry key="app/src/main/res/drawable-v24/placeholder_image.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/driver.xml" value="0.2125" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/ic_favorite.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/round_shape.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1852355072463768" />
         <entry key="app/src/main/res/layout/favorite_fragment.xml" value="0.13134057971014493" />
+        <entry key="app/src/main/res/layout/fragment_apod_detail.xml" value="0.15566037735849056" />
         <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_list.xml" value="0.6726973684210527" />
@@ -20,6 +22,7 @@
         <entry key="app/src/main/res/layout/network_state_itme.xml" value="0.129981884057971" />
         <entry key="app/src/main/res/layout/video_list_item.xml" value="0.1539855072463768" />
         <entry key="app/src/main/res/menu/home_menu.xml" value="0.19635416666666666" />
+        <entry key="app/src/main/res/menu/menu_apod_detail.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/menu/nav_menu.xml" value="0.19635416666666666" />
       </map>
     </option>
