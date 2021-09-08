@@ -1,6 +1,7 @@
 package com.yaya.apod.data.repo
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.yaya.apod.AppExecutors
 import com.yaya.apod.api.ApiResponse
 import com.yaya.apod.api.ApodApi
@@ -9,6 +10,7 @@ import com.yaya.apod.data.db.dao.ApodDao
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.di.NetworkModule
 import com.yaya.apod.util.DateUtil
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -74,5 +76,13 @@ class ApodRepository @Inject constructor(
 
     fun getFavorite(): LiveData<MutableList<Apod>> {
         return apodDao.getFavorite()
+    }
+
+    fun getApod(apodId: String): LiveData<Apod> {
+        return apodDao.getApod(apodId.toInt()).asLiveData()
+    }
+
+    fun isFavorite(apodId: String): Flow<Boolean> {
+        return apodDao.isFavorite(apodId.toInt())
     }
 }
