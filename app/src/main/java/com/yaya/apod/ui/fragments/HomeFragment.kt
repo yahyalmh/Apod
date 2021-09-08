@@ -46,7 +46,6 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        setHasOptionsMenu(true)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         sharedPreferences = requireContext().getSharedPreferences(
             DefaultConfig.APP_SHARED_PREF_NAME,
@@ -61,10 +60,46 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
 
         initArrowUpKey()
 
+        initToolbarMenu()
+
         return binding!!.root
     }
 
+    private fun initToolbarMenu() {
+        binding!!.toolbar.inflateMenu(R.menu.home_menu)
+        updateToolbar()
+        binding!!.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.grid_item -> {
+                    if (binding!!.listView.layoutManager is GridLayoutManager) {
+                        setRecyclerViewLayoutManager(false)
+                    } else {
+                        setRecyclerViewLayoutManager(true)
+                    }
+                    updateToolbar()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+    }
+
+    private fun updateToolbar() {
+        val menu = binding!!.toolbar.menu
+        val isGridLayoutManager =
+            sharedPreferences.getBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, false)
+
+        menu.findItem(R.id.grid_item).icon = if (isGridLayoutManager) {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
+        } else {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         adapter.addLoadStateListener {
             if (adapter.itemCount >= 1 && binding != null) {
                 binding!!.isError = false
@@ -190,14 +225,8 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
             }
             binding!!.invalidateAll()
         }
-        
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.home_menu, menu)
     }
-
 
     private fun setRecyclerViewLayoutManager(isGridLayoutManager: Boolean) {
         binding!!.listView.layoutManager = if (isGridLayoutManager) {
@@ -212,32 +241,6 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         binding!!.needUpKey = false
         sharedPreferences.edit().putBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, isGridLayoutManager)
             .apply()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        val isGridLayoutManager =
-            sharedPreferences.getBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, false)
-        menu.findItem(R.id.grid_item).icon = if (isGridLayoutManager) {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
-        } else {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        return if (id == R.id.grid_item) {
-
-            if (binding!!.listView.layoutManager is GridLayoutManager) {
-                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
-                setRecyclerViewLayoutManager(false)
-            } else {
-                item.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
-                setRecyclerViewLayoutManager(true)
-            }
-            true
-        } else super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
