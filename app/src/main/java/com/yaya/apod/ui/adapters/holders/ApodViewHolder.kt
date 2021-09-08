@@ -1,6 +1,7 @@
 package com.yaya.apod.ui.adapters.holders
 
 import android.annotation.SuppressLint
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.recyclerview.widget.RecyclerView
@@ -15,14 +16,15 @@ import com.yaya.apod.util.DateUtil
 
 class ApodViewHolder(private val binding: HomeListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    private lateinit var delegate: ItemChangeDelegate
+    private lateinit var delegate: ItemDelegate
     lateinit var item: Apod
 
-    interface ItemChangeDelegate {
-        fun itemChanged(item: Apod)
+    interface ItemDelegate {
+        fun itemChanged(apod: Apod)
+        fun itemClicked(item: Apod)
     }
 
-    fun setDelegate(delegate: ItemChangeDelegate) {
+    fun setDelegate(delegate: ItemDelegate) {
         this.delegate = delegate
     }
 
@@ -90,7 +92,6 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
         binding.favoriteImgView.setFavorite(item.favorite)
         binding.favoriteImgView.startAnimation()
         binding.isFavorite = item.favorite
-//        binding.favoriteImgView.invalidate()
         delegate.itemChanged(item)
     }
 
@@ -100,14 +101,17 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
         }
 
         binding.root.setOnClickListener(object : CustomClickListener() {
-            override fun onDoubleClick() {
+            override fun onDoubleClick(v: View) {
                 toggleFavorite()
             }
 
-            override fun onSingleClick() {
-                //   navigateToPlant(plant, it)
+            override fun onSingleClick(v: View) {
+                navigateToApodDetails(item)
             }
-
         })
+    }
+
+    private fun navigateToApodDetails(apod: Apod) {
+        delegate.itemClicked(apod)
     }
 }

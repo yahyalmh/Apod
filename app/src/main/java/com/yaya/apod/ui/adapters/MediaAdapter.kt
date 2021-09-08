@@ -13,7 +13,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 
 
 @ActivityScoped
-class MediaAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
+class MediaAdapter(private val delegate: ApodViewHolder.ItemDelegate) :
     PagingDataAdapter<Apod, ApodViewHolder>(ApodDiffCallback()) {
     private var data: MutableList<Apod> = mutableListOf()
 

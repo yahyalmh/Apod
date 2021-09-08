@@ -12,16 +12,16 @@ abstract class CustomClickListener : View.OnClickListener {
 
     override fun onClick(v: View) {
         handler.removeCallbacksAndMessages(null)
-        handler.postDelayed({ onSingleClick() }, delta)
+        handler.postDelayed({ onSingleClick(v) }, delta)
         if (SystemClock.elapsedRealtime() - deltaClick < delta) {
             handler.removeCallbacksAndMessages(null)
-            onDoubleClick()
+            onDoubleClick(v)
         }
         deltaClick = SystemClock.elapsedRealtime()
     }
 
-    abstract fun onDoubleClick()
-    abstract fun onSingleClick()
+    abstract fun onDoubleClick(v: View)
+    abstract fun onSingleClick(v: View)
 
     companion object {
         private const val DEFAULT_QUALIFICATION_SPAN: Long = 200

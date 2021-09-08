@@ -10,7 +10,7 @@ import com.yaya.apod.ui.adapters.holders.ApodViewHolder
 import dagger.hilt.android.scopes.ActivityScoped
 
 @ActivityScoped
-class FavoriteAdapter(private val delegate: ApodViewHolder.ItemChangeDelegate) :
+class FavoriteAdapter(private val delegate: ApodViewHolder.ItemDelegate) :
     RecyclerView.Adapter<ApodViewHolder>() {
 
     private var data = mutableListOf<Apod>()
