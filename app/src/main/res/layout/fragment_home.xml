@@ -101,7 +101,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="@{isError ? View.VISIBLE : View.INVISIBLE}" />
-        
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/arrow_up"
             style="@style/Widget.MaterialComponents.FloatingActionButton"
