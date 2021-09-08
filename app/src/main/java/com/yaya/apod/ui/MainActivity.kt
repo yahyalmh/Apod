@@ -1,46 +1,52 @@
 package com.yaya.apod.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.yaya.apod.R
-import com.yaya.apod.data.db.AppDatabase
+import com.yaya.apod.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    lateinit var binding: ActivityMainBinding
     lateinit var navController: NavController
-    lateinit var appBarConfiguration: AppBarConfiguration
-
-    @Inject
-    lateinit var database: AppDatabase
+    private var currentFragmentId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
-        navController = navHostFragment.navController
+        setUpBottomNavigation()
+        setNavDestinationListener()
+    }
 
-        // Setup the bottom navigation view with navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        bottomNavigationView.setupWithNavController(navController)
-
-        // Setup the ActionBar with navController and 2 top level destinations
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.home, R.id.favorite))
-        setupActionBarWithNavController(navController, appBarConfiguration)
+    private fun setNavDestinationListener() {
+        // Hide bottomNav in detail fragment and show on others
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.detail_fragment) {
+                binding.bottomNav.visibility = View.GONE
+            } else {
+                binding.bottomNav.visibility = View.VISIBLE
+            }
+            currentFragmentId = destination.id
+        }
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
+    private fun setUpBottomNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.navHostContainer.id)
+                as NavHostFragment
+
+        navController = navHostFragment.navController
+        binding.bottomNav.setupWithNavController(navController)
+        binding.bottomNav.setOnNavigationItemReselectedListener {
+            // Do nothing to ignore the reselection
+        }
     }
 }

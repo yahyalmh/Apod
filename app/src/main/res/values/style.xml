@@ -24,4 +24,10 @@
     <style name="ThemeOverlay.App.CircularProgressIndicator" parent="">
         <item name="colorPrimary">@color/shrine_pink_100</item>
     </style>
+    <style name="Theme.apod.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+  
+
+    <style name="TextAppearance.Apod.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 </resources>
