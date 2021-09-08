@@ -8,10 +8,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.yaya.apod.util.Constants
 import com.yaya.apod.DefaultConfig
 import com.yaya.apod.R
 import com.yaya.apod.data.model.Apod
@@ -20,11 +20,12 @@ import com.yaya.apod.ui.adapters.FavoriteAdapter
 import com.yaya.apod.ui.adapters.holders.ApodViewHolder
 import com.yaya.apod.ui.component.VerticalSpaceItemDecoration
 import com.yaya.apod.util.AndroidUtils
+import com.yaya.apod.util.Constants
 import com.yaya.apod.viewmodels.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
+class FavoriteFragment : Fragment(), ApodViewHolder.ItemDelegate {
     private lateinit var sharedPreferences: SharedPreferences
     private var binding: FragmentFavoriteBinding? = null
     private lateinit var adapter: FavoriteAdapter
@@ -153,7 +154,13 @@ class FavoriteFragment : Fragment(), ApodViewHolder.ItemChangeDelegate {
         binding = null
     }
 
-    override fun itemChanged(item: Apod) {
-        viewModel.updateApod(item)
+    override fun itemChanged(apod: Apod) {
+        viewModel.updateApod(apod)
+    }
+
+    override fun itemClicked(apod: Apod) {
+        val actionHomeToDetail =
+            FavoriteFragmentDirections.actionFavoriteToDetail(apod.id.toString())
+        findNavController().navigate(actionHomeToDetail)
     }
 }

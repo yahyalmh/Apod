@@ -10,5 +10,11 @@
     <string name="grid">Grid</string>
     <string name="OK">OK</string>
     <string name="Updated">Already up to date</string>
-    <string name="InternetUnavailable">Internet is not available, check your connection and to refresh</string>
+    <string name="InternetUnavailableToday">Internet is not available, check your connection and swipe down to refresh</string>
+    <string name="InternetUnavailable">Internet is not available, check your connection and retry</string>
+    <string name="menu_item_set_wall">Set Wallpapre</string>
+    <string name="home_content_description">Navigate to Home screen</string>
+    <string name="added_to_favorite">Added to favorites</string>
+    <string name="removed_from_favorite">Removed from favorites</string>
+    <string name="apod_details_title">Apod Detail</string>
 </resources>

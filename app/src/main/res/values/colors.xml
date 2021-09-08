@@ -8,4 +8,20 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="shrine_pink_100">#FF4081</color>
+    
+
+    <color name="Apod_black">#de000000</color>
+    <color name="Apod_gray_50">#fafafa</color>
+    <color name="Apod_gray_50_a600">#99fafafa</color>
+    <color name="Apod_green_300">#6dc790</color>
+    <color name="Apod_green_500">#49bb79</color>
+    <color name="Apod_green_700">#005d2b</color>
+    <color name="Apod_green_900">#1a231e</color>
+    <color name="Apod_white">#deffffff</color>
+    <color name="Apod_yellow_300">#f8f99f</color>
+    <color name="Apod_yellow_500">#ffff63</color>
+
+    <!-- fac colors -->
+    <color name="favorite_color">#EC4E4E</color>
+    <color name="no_favorite_color">#fafafa</color>
 </resources>
