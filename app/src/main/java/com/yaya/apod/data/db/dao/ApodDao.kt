@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.yaya.apod.data.model.Apod
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ApodDao {
@@ -27,6 +28,12 @@ interface ApodDao {
 
     @Query("SELECT * FROM apod order by date desc")
     fun getAll(): PagingSource<Int, Apod>
+
+    @Query("select * from apod where id=:apodId")
+    fun getApod(apodId: Int): Flow<Apod>
+
+    @Query("select exists (select 1 from apod where id=:apodId  and  favorite=1)")
+    fun isFavorite(apodId: Int): Flow<Boolean>
 
     @Query("SELECT * FROM apod where favorite=1 order by date desc")
     fun getFavorite(): LiveData<MutableList<Apod>>
