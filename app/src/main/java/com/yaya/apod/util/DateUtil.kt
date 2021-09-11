@@ -6,14 +6,14 @@ import java.util.*
 class DateUtil {
 
     companion object {
-        private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CANADA)
+        private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
         /**
          * This method return today's date in "yyyy-MM-dd" format
          */
         fun todayDate(): String {
-            val calendar = Calendar.getInstance()
-            return simpleDateFormat.format(calendar.time);
+            val calendar = Calendar.getInstance(Locale.US)
+            return simpleDateFormat.format(calendar.time)
         }
 
         /**
@@ -22,7 +22,7 @@ class DateUtil {
          */
         fun getDateBeforeDate(date: String, daysCountBeforeDate: Int): String {
             val formattedDate: Date = simpleDateFormat.parse(date)!!
-            val calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance(Locale.US)
             calendar.time = formattedDate
             calendar.add(Calendar.DAY_OF_YEAR, -daysCountBeforeDate)
 
@@ -35,7 +35,7 @@ class DateUtil {
          */
         fun getDateAfterDate(date: String, daysCountAfterDate: Int): String {
             val formattedDate: Date = simpleDateFormat.parse(date)!!
-            val calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance(Locale.US)
             calendar.time = formattedDate
             calendar.add(Calendar.DAY_OF_YEAR, daysCountAfterDate)
 

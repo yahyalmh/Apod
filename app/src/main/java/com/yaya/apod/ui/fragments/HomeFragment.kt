@@ -2,8 +2,12 @@ package com.yaya.apod.ui.fragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
@@ -25,6 +29,7 @@ import com.yaya.apod.databinding.FragmentHomeBinding
 import com.yaya.apod.ui.adapters.MediaAdapter
 import com.yaya.apod.ui.adapters.MediaLoadStateAdapter
 import com.yaya.apod.ui.adapters.holders.ApodViewHolder
+import com.yaya.apod.ui.component.OptionalDialog
 import com.yaya.apod.ui.component.VerticalSpaceItemDecoration
 import com.yaya.apod.util.AndroidUtils
 import com.yaya.apod.util.Constants
@@ -135,12 +140,20 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         binding!!.isLoading = false
         binding!!.errorTxtView.text =
             (loadStates.mediator?.refresh as LoadState.Error).error.message
-        AlertDialog.Builder(context)
-            .setTitle(getString(R.string.app_name))
-            .setMessage((loadStates.mediator?.refresh as LoadState.Error).error.message)
-            .setPositiveButton(
-                getString(R.string.OK)
-            ) { dialog, _ -> dialog.dismiss() }.create().show()
+
+        val dialog = OptionalDialog.Builder(requireContext())
+            .setIcon(R.drawable.ic_error)
+            .setHint((loadStates.mediator?.refresh as LoadState.Error).error.message!!)
+            .setFirstOption(
+                getString(R.string.ok),
+                object : OptionalDialog.OptionalDialogClickListener {
+                    override fun onClick(dialog: OptionalDialog) {
+                        dialog.dismiss()
+                    }
+                }
+            )
+
+        dialog.show()
     }
 
     private fun setNotLoadingState() {

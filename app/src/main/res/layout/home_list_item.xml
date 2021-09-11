@@ -84,12 +84,12 @@
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/loading"
-                style="@style/Widget.App.CircularProgressIndicator"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:indeterminate="true"
                 android:indeterminateBehavior="repeat"
+                android:indeterminateTint="@color/Apod_gray_50"
                 android:visibility="@{isLoading ? View.VISIBLE : View.GONE}" />
 
             <TextView
@@ -102,9 +102,9 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/ubuntumono_bold_italic"
+                android:gravity="center"
                 android:lines="4"
                 android:textAlignment="center"
-                android:gravity="center"
                 android:textColor="#455A64"
                 android:textSize="15sp"
                 tools:text="sample title" />

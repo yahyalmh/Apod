@@ -14,8 +14,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 class FavoriteImageView @JvmOverloads constructor(
     @ActivityContext context: Context,
     attrs: AttributeSet?
-) :
-    AppCompatImageView(context, attrs) {
+) : AppCompatImageView(context, attrs) {
     var isFavorite: Boolean = false
 
     @JvmName("setFavorite1")

@@ -17,6 +17,7 @@ import com.yaya.apod.util.DateUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,7 +58,11 @@ class ApodRemoteMediator @Inject constructor(
         if (lastDate == null || count == 0) {
             val endDate = DateUtil.todayDate()
             val startDate = DateUtil.getDateBeforeDate(endDate, state.config.pageSize)
-            val data = requestApodByDate(startDate, endDate)
+            val data = try {
+                requestApodByDate(startDate, endDate)
+            } catch (e: HttpException) {
+                requestApodByDate(startDate, DateUtil.getDateBeforeDate(endDate, 1))
+            }
             db.withTransaction {
                 db.apodDao().insertList(data)
             }
@@ -67,8 +72,13 @@ class ApodRemoteMediator @Inject constructor(
             }
             if (topDate != DateUtil.todayDate()) {
                 val todayApod = requestTodayApod()
-                db.withTransaction {
-                    db.apodDao().insert(todayApod)
+                val apodTmp = db.withTransaction {
+                    db.apodDao().getByDate(todayApod.date)
+                }
+                if (apodTmp == null) {
+                    db.withTransaction {
+                        db.apodDao().insert(todayApod)
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -109,15 +119,23 @@ class ApodRemoteMediator @Inject constructor(
         if (!AndroidUtils.isInternetAvailable(context)) {
             throw InternetNotAvailableException(context.getString(R.string.InternetUnavailable))
         }
-
-        return apodApi.getContentByDatePeriod(startDate = startDate, endDate = endDate)
+        while (true) {
+            try {
+                return apodApi.getContentByDatePeriod(startDate = startDate, endDate = endDate)
+            } catch (e: SocketTimeoutException) {}
+        }
     }
 
     private suspend fun requestTodayApod(): Apod {
         if (!AndroidUtils.isInternetAvailable(context)) {
             throw InternetNotAvailableException(context.getString(R.string.InternetUnavailableToday))
         }
-        return apodApi.getTodayContent()
+        while (true) {
+            try {
+                return apodApi.getTodayContent()
+            } catch (e: SocketTimeoutException) {
+            }
+}
     }
 
     class InternetNotAvailableException(override val message: String) : Exception()

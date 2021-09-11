@@ -17,14 +17,16 @@ class ApodDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val apodId = savedStateHandle.get<String>(APOD_ID_SAVED_STATE_KEY)!!
-    val apod = apodRepository.getApod(apodId)
+    val apod = apodRepository.getApodLiveData(apodId)
 
     fun addApodToFavorite(apod: Apod) = viewModelScope.launch {
         apodRepository.updateApod(apod)
     }
 
     val isFavorite = apodRepository.isFavorite(apodId).asLiveData()
-
+    suspend fun getApods(): Apod {
+        return apodRepository.getApod(apodId)
+    }
     companion object {
         const val APOD_ID_SAVED_STATE_KEY = "apodId"
     }

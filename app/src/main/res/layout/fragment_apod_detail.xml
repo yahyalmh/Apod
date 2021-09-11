@@ -10,6 +10,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.yaya.apod.ui.component.Loading" />
+
         <import type="com.yaya.apod.R" />
 
         <variable
@@ -89,7 +91,6 @@
                     app:menu="@menu/menu_apod_detail"
                     app:navigationIcon="@drawable/ic_back"
                     app:titleTextColor="?attr/colorOnSurface" />
-                <!--                    android:onClick="@{() -> callback.add(viewModel.apod)}"-->
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -156,6 +157,12 @@
             android:onClick="@{() -> callback.addToFavorite(viewModel.apod)}"
             app:layout_anchor="@id/appbar"
             app:layout_anchorGravity="bottom|end" />
+
+        <com.yaya.apod.ui.component.Loading
+            android:id="@+id/progress_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

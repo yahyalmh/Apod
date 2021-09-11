@@ -30,7 +30,10 @@ interface ApodDao {
     fun getAll(): PagingSource<Int, Apod>
 
     @Query("select * from apod where id=:apodId")
-    fun getApod(apodId: Int): Flow<Apod>
+    fun getApodFlow(apodId: Int): Flow<Apod>
+
+    @Query("select * from apod where id=:apodId")
+    suspend fun getApod(apodId: Int): Apod
 
     @Query("select exists (select 1 from apod where id=:apodId  and  favorite=1)")
     fun isFavorite(apodId: Int): Flow<Boolean>
@@ -48,7 +51,10 @@ interface ApodDao {
     fun getByDateCount(start: String, count: Int): LiveData<MutableList<Apod>>
 
     @Query("SELECT * FROM apod where date==:date")
-    fun getByDate(date: String): LiveData<Apod>
+    fun getByDateLiveData(date: String): LiveData<Apod>
+
+    @Query("SELECT * FROM apod where date==:date")
+    fun getByDate(date: String): Apod?
 
     @Query("SELECT date FROM apod order by date asc limit 1")
     fun getLastDate(): String?

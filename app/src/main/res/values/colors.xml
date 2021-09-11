@@ -11,6 +11,7 @@
     
 
     <color name="Apod_black">#de000000</color>
+    <color name="Apod_black_melow">#DE231313</color>
     <color name="Apod_gray_50">#fafafa</color>
     <color name="Apod_gray_50_a600">#99fafafa</color>
     <color name="Apod_green_300">#6dc790</color>

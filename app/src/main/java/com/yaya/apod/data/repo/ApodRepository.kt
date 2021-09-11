@@ -43,7 +43,7 @@ class ApodRepository @Inject constructor(
             }
 
             override fun loadFromDb(): LiveData<Apod> {
-                return apodDao.getByDate(DateUtil.todayDate())
+                return apodDao.getByDateLiveData(DateUtil.todayDate())
             }
 
             override fun createCall(): LiveData<ApiResponse<Apod>> {
@@ -78,8 +78,12 @@ class ApodRepository @Inject constructor(
         return apodDao.getFavorite()
     }
 
-    fun getApod(apodId: String): LiveData<Apod> {
-        return apodDao.getApod(apodId.toInt()).asLiveData()
+    fun getApodLiveData(apodId: String): LiveData<Apod> {
+        return apodDao.getApodFlow(apodId.toInt()).asLiveData()
+    }
+
+    suspend fun getApod(apodId: String): Apod {
+        return apodDao.getApod(apodId.toInt())
     }
 
     fun isFavorite(apodId: String): Flow<Boolean> {
