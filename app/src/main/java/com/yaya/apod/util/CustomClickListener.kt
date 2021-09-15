@@ -24,7 +24,7 @@ abstract class CustomClickListener : View.OnClickListener {
     abstract fun onSingleClick(v: View)
 
     companion object {
-        private const val DEFAULT_QUALIFICATION_SPAN: Long = 200
+        private const val DEFAULT_QUALIFICATION_SPAN: Long = 300
     }
 
     init {

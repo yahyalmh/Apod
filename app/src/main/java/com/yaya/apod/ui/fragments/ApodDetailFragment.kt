@@ -1,6 +1,8 @@
 package com.yaya.apod.ui.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DownloadManager
 import android.app.WallpaperManager
 import android.content.Context
@@ -11,6 +13,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -19,6 +22,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.*
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -73,20 +77,14 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         sharedPreferences = requireContext().getSharedPreferences(
-            DefaultConfig.APP_SHARED_PREF_NAME,
-            Context.MODE_PRIVATE
+            DefaultConfig.APP_SHARED_PREF_NAME, Context.MODE_PRIVATE
         )
         askAboutStorage = sharedPreferences.getBoolean(Constants.ASK_ABOUT_STORAGE_HARED_KEY, true)
         binding = DataBindingUtil.inflate<FragmentApodDetailBinding>(
-            inflater,
-            R.layout.fragment_apod_detail,
-            container,
-            false
+            inflater, R.layout.fragment_apod_detail, container, false
         ).apply {
             fab.imageTintList =
                 AppCompatResources.getColorStateList(requireContext(), R.color.favorite_color)
@@ -106,27 +104,25 @@ class ApodDetailFragment : Fragment(), Target {
             }
             var isToolbarShown = false
             // scroll change listener begins at Y = 0 when image is fully collapsed
-            apodDetailScrollview.setOnScrollChangeListener(
-                NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+            apodDetailScrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
 
-                    // User scrolled past image to height of toolbar and the title text is
-                    // underneath the toolbar, so the toolbar should be shown.
-                    Log.v("TAGgg", "${scrollY}, ${toolbar.height}")
-                    val shouldShowToolbar = scrollY > toolbar.height
+                // User scrolled past image to height of toolbar and the title text is
+                // underneath the toolbar, so the toolbar should be shown.
+                Log.v("TAGgg", "${scrollY}, ${toolbar.height}")
+                val shouldShowToolbar = scrollY > toolbar.height
 
-                    // The new state of the toolbar differs from the previous state; update
-                    // appbar and toolbar attributes.
-                    if (isToolbarShown != shouldShowToolbar) {
-                        isToolbarShown = shouldShowToolbar
+                // The new state of the toolbar differs from the previous state; update
+                // appbar and toolbar attributes.
+                if (isToolbarShown != shouldShowToolbar) {
+                    isToolbarShown = shouldShowToolbar
 
-                        // Use shadow animator to add elevation if toolbar is shown
-                        appbar.isActivated = shouldShowToolbar
+                    // Use shadow animator to add elevation if toolbar is shown
+                    appbar.isActivated = shouldShowToolbar
 
-                        // Show the plant name if toolbar is shown
-                        toolbarLayout.isTitleEnabled = shouldShowToolbar
-                    }
+                    // Show the plant name if toolbar is shown
+                    toolbarLayout.isTitleEnabled = shouldShowToolbar
                 }
-            )
+            })
         }
         return binding.root
     }
@@ -142,6 +138,67 @@ class ApodDetailFragment : Fragment(), Target {
             initToolbar()
             if (apod.mediaType == MediaType.IMAGE.type) {
                 Picasso.get().load(apod.url).into(this@ApodDetailFragment)
+            } else {
+                loadWebView()
+            }
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun loadWebView() {
+        binding.loading.visibility = View.VISIBLE
+        binding.webView.addJavascriptInterface(
+            SimpleWebJavascriptInterface(requireActivity()), "Android"
+        )
+        binding.webView.settings.javaScriptEnabled = true
+        val videoFrame =
+            "<html><body><iframe width=\"100%\" height=\"100%\" src=\"${apod.url}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
+        binding.webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                binding.loading.visibility = View.INVISIBLE
+                view.loadUrl(url)
+                return true
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+                binding.loading.visibility = View.INVISIBLE
+            }
+
+            override fun onReceivedHttpError(
+                view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?
+            ) {
+                setErrorWebView()
+            }
+
+            override fun onReceivedSslError(
+                view: WebView?, handler: SslErrorHandler?, error: SslError?
+            ) {
+                setErrorWebView()
+            }
+
+            override fun onReceivedError(
+                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
+            ) {
+                binding.loading.visibility = View.INVISIBLE
+                setErrorWebView()
+            }
+        }
+        binding.webView.loadData(videoFrame, "text/html", "utf-8")
+    }
+
+    fun setErrorWebView() {
+        val defaultErrorPagePath = "file:///android_asset/html/default_error_page.html"
+        binding.webView.loadUrl(defaultErrorPagePath)
+        binding.webView.invalidate()
+    }
+
+    inner class SimpleWebJavascriptInterface(private val activity: Activity) {
+        @JavascriptInterface
+        fun reloadWebPage() {
+            activity.runOnUiThread {
+                Log.e("TAGgg", "uiThread")
+                loadWebView()
             }
         }
     }
@@ -194,10 +251,9 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun showRationalPermissionAlert() {
-        val dialog = OptionalDialog.Builder(requireContext())
-            .setIcon(R.drawable.ic_storage)
-            .setHint(getString(R.string.permission_request))
-            .setSecondOption(getString(R.string.ok),
+        val dialog = OptionalDialog.Builder(requireContext()).setIcon(R.drawable.ic_storage)
+            .setHint(getString(R.string.permission_request)).setSecondOption(
+                getString(R.string.ok),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
@@ -208,16 +264,12 @@ class ApodDetailFragment : Fragment(), Target {
                             )
                         )
                     }
-                }
-            )
-            .setFirstOption(
-                getString(R.string.cancel),
+                }).setFirstOption(getString(R.string.cancel),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
                     }
-                }
-            )
+                })
         dialog.show()
     }
 
@@ -274,15 +326,11 @@ class ApodDetailFragment : Fragment(), Target {
 //            new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED));
 
         val lastDownload = mgr.enqueue(
-            DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(
-                    DownloadManager.Request.NETWORK_WIFI or
-                            DownloadManager.Request.NETWORK_MOBILE
-                )
-                .setAllowedOverRoaming(false)
+            DownloadManager.Request(uri).setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE
+            ).setAllowedOverRoaming(false)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setTitle("Demo")
-                .setDescription("Something useful. No, really.")
+                .setTitle("Demo").setDescription("Something useful. No, really.")
                 .setDestinationUri(dest)
         )
 
@@ -298,11 +346,8 @@ class ApodDetailFragment : Fragment(), Target {
             if (Build.VERSION.SDK_INT >= 24) {
                 try {
                     intent.putExtra(
-                        Intent.EXTRA_STREAM,
-                        FileProvider.getUriForFile(
-                            requireContext(),
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            tmpFile
+                        Intent.EXTRA_STREAM, FileProvider.getUriForFile(
+                            requireContext(), BuildConfig.APPLICATION_ID + ".provider", tmpFile
                         )
                     )
                     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -324,11 +369,8 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun showSetWallpaperDialog() {
-        val dialog = OptionalDialog.Builder(requireContext())
-            .setIcon(R.drawable.ic_wallpaper)
-            .withCancelBtn()
-            .setMessage(getString(R.string.set_wall_question))
-            .setCancelable(false)
+        val dialog = OptionalDialog.Builder(requireContext()).setIcon(R.drawable.ic_wallpaper)
+            .withCancelBtn().setMessage(getString(R.string.set_wall_question)).setCancelable(false)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             dialog.setHint(getString(R.string.set_wall_hint_N))
@@ -339,27 +381,21 @@ class ApodDetailFragment : Fragment(), Target {
                             binding.progressOverlay.show()
                             setWallpaper(WallpaperManager.FLAG_SYSTEM)
                         }
-                    }
-                )
-                .setSecondOption(
-                    getString(R.string.set_lock_screen),
+                    }).setSecondOption(getString(R.string.set_lock_screen),
                     object : OptionalDialog.OptionalDialogClickListener {
                         override fun onClick(dialog: OptionalDialog) {
                             dialog.dismiss()
                             binding.progressOverlay.show()
                             setWallpaper(WallpaperManager.FLAG_LOCK)
                         }
-                    }
-                )
-                .setThirdOption(getString(R.string.set_both),
+                    }).setThirdOption(getString(R.string.set_both),
                     object : OptionalDialog.OptionalDialogClickListener {
                         override fun onClick(dialog: OptionalDialog) {
                             dialog.dismiss()
                             binding.progressOverlay.show()
                             setWallpaper(null)
                         }
-                    }
-                )
+                    })
         } else {
             dialog.setHint(getString(R.string.set_wall_hint))
                 .setSecondOption(getString(R.string.set_wallpaper),
@@ -369,16 +405,12 @@ class ApodDetailFragment : Fragment(), Target {
                             binding.progressOverlay.show()
                             setWallpaper(null)
                         }
-                    }
-                )
-                .setFirstOption(
-                    getString(R.string.cancel),
+                    }).setFirstOption(getString(R.string.cancel),
                     object : OptionalDialog.OptionalDialogClickListener {
                         override fun onClick(dialog: OptionalDialog) {
                             dialog.dismiss()
                         }
-                    }
-                )
+                    })
         }
 
         dialog.show()
@@ -396,20 +428,24 @@ class ApodDetailFragment : Fragment(), Target {
             } else {
                 try {
                     // test this
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                        wallpaperManager.setBitmap(imageBitmap, null, false, WallpaperManager.FLAG_LOCK)
-                        wallpaperManager.setBitmap(imageBitmap, null, false, WallpaperManager.FLAG_SYSTEM)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        wallpaperManager.setBitmap(
+                            imageBitmap, null, false, WallpaperManager.FLAG_LOCK
+                        )
+                        wallpaperManager.setBitmap(
+                            imageBitmap, null, false, WallpaperManager.FLAG_SYSTEM
+                        )
                     }
 
                     wallpaperManager.setBitmap(imageBitmap)
                     1
-                }catch (e: IOException){
+                } catch (e: IOException) {
                     0
                 }
             }
-            if (result > 0){
+            if (result > 0) {
                 showSnackBar(R.string.set_wall_success)
-            }else{
+            } else {
                 showSnackBar(R.string.set_wall_failed)
             }
         }
@@ -417,9 +453,9 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun setBackPress() {
-        requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(this, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (binding.progressOverlay.isShowed) {
                         binding.progressOverlay.showStopDialog()
@@ -460,6 +496,7 @@ class ApodDetailFragment : Fragment(), Target {
                 return
             }
             imageBitmap = bitmap
+//            binding.detailImage.setImageBitmap(imageBitmap)
         }
     }
 
@@ -472,9 +509,7 @@ class ApodDetailFragment : Fragment(), Target {
     private fun showSnackBar(resId: Int) {
         binding.progressOverlay.hide()
         Snackbar.make(
-            binding.root,
-            resId,
-            Snackbar.LENGTH_LONG
+            binding.root, resId, Snackbar.LENGTH_LONG
         ).show()
     }
 
@@ -487,32 +522,26 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun showPermissionErrorAlert() {
-        val dialog = OptionalDialog.Builder(requireContext())
-            .setIcon(R.drawable.ic_storage)
-            .setHint(getString(R.string.permission_setting_request))
-            .setSecondOption(getString(R.string.setting),
+        val dialog = OptionalDialog.Builder(requireContext()).setIcon(R.drawable.ic_storage)
+            .setHint(getString(R.string.permission_setting_request)).setSecondOption(
+                getString(R.string.setting),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
                         try {
-                            val intent =
-                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                             intent.data = Uri.parse("package:" + requireContext().packageName)
                             startActivity(intent)
                         } catch (e: Exception) {
                             Log.e("TAG", e.message!!)
                         }
                     }
-                }
-            )
-            .setFirstOption(
-                getString(R.string.cancel),
+                }).setFirstOption(getString(R.string.cancel),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
                     }
-                }
-            )
+                })
 
         dialog.show()
     }

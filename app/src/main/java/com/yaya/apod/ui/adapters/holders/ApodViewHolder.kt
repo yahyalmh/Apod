@@ -1,9 +1,9 @@
 package com.yaya.apod.ui.adapters.holders
 
 import android.annotation.SuppressLint
+import android.net.http.SslError
 import android.view.View
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -51,12 +51,8 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
     }
 
     private fun fetchImage(url: String) {
-        Picasso.get()
-            .load(url)
-            .fit()
-            .placeholder(R.drawable.placeholder_image)
-            .error(R.drawable.ic_error)
-            .into(binding.imageImgView, object : Callback {
+        Picasso.get().load(url).fit().placeholder(R.drawable.placeholder_image)
+            .error(R.drawable.ic_error).into(binding.imageImgView, object : Callback {
                 override fun onSuccess() {
                     binding.isLoading = false
                 }
@@ -75,16 +71,42 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                binding.loading.visibility = View.INVISIBLE
                 view.loadUrl(url)
                 return true
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                binding.isLoading = false
+                binding.loading.visibility = View.INVISIBLE
+            }
+
+            override fun onReceivedHttpError(
+                view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?
+            ) {
+                setErrorWebView()
+            }
+
+            override fun onReceivedSslError(
+                view: WebView?, handler: SslErrorHandler?, error: SslError?
+            ) {
+                setErrorWebView()
+            }
+
+            override fun onReceivedError(
+                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
+            ) {
+                setErrorWebView()
             }
         }
         binding.webView.loadData(videoFrame, "text/html", "utf-8")
+    }
+
+    fun setErrorWebView() {
+        binding.loading.visibility = View.INVISIBLE
+        val defaultErrorPagePath = "file:///android_asset/html/default_error_page_simple.html"
+        binding.webView.loadUrl(defaultErrorPagePath)
+        binding.webView.invalidate()
     }
 
     private fun toggleFavorite() {
@@ -100,7 +122,7 @@ class ApodViewHolder(private val binding: HomeListItemBinding) :
             toggleFavorite()
         }
 
-        binding.root.setOnClickListener(object : CustomClickListener() {
+        binding.contentView.setOnClickListener(object : CustomClickListener() {
             override fun onDoubleClick(v: View) {
                 toggleFavorite()
             }

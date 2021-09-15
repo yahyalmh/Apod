@@ -15,11 +15,13 @@ import com.yaya.apod.di.NetworkModule
 import com.yaya.apod.util.AndroidUtils
 import com.yaya.apod.util.DateUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.concurrent.thread
 
 @ExperimentalPagingApi
 @Singleton
@@ -36,11 +38,7 @@ class ApodRemoteMediator @Inject constructor(
                 LoadType.REFRESH -> refresh(state)
                 LoadType.APPEND -> append(state)
             }
-        } catch (e: IOException) {
-            MediatorResult.Error(e)
-        } catch (e: HttpException) {
-            MediatorResult.Error(e)
-        } catch (e: InternetNotAvailableException) {
+        } catch (e: Exception) {
             MediatorResult.Error(e)
         }
     }
@@ -80,17 +78,9 @@ class ApodRemoteMediator @Inject constructor(
                         db.apodDao().insert(todayApod)
                     }
                 }
-            } else {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.Updated),
-                    Toast.LENGTH_LONG
-                )
-                    .show()
             }
         }
         return MediatorResult.Success(endOfPaginationReached = false)
-
     }
 
     /**
@@ -122,7 +112,9 @@ class ApodRemoteMediator @Inject constructor(
         while (true) {
             try {
                 return apodApi.getContentByDatePeriod(startDate = startDate, endDate = endDate)
-            } catch (e: SocketTimeoutException) {}
+            } catch (e: SocketTimeoutException) {
+                throw e
+            }
         }
     }
 
@@ -134,6 +126,7 @@ class ApodRemoteMediator @Inject constructor(
             try {
                 return apodApi.getTodayContent()
             } catch (e: SocketTimeoutException) {
+                throw e
             }
 }
     }

@@ -25,33 +25,25 @@ class AndroidUtils {
 
         @Suppress("DEPRECATION")
         fun isInternetAvailable(context: Context): Boolean {
-            var result = false
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                connectivityManager?.run {
-                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                        ?.run {
-                            result = when {
-                                hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                                hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                                hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                                else -> false
-                            }
-                        }
+            try {
+                val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                var netInfo = connectivityManager.activeNetworkInfo
+                if (netInfo != null && (netInfo.isConnectedOrConnecting || netInfo.isAvailable)) {
+                    return true
                 }
-            } else {
-                connectivityManager?.run {
-                    connectivityManager.activeNetworkInfo?.run {
-                        if (type == ConnectivityManager.TYPE_WIFI) {
-                            result = true
-                        } else if (type == ConnectivityManager.TYPE_MOBILE) {
-                            result = true
-                        }
+                netInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                if (netInfo != null && netInfo.isConnectedOrConnecting) {
+                    return true
+                } else {
+                    netInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                    if (netInfo != null && netInfo.isConnectedOrConnecting) {
+                        return true
                     }
                 }
+            } catch (e: Exception) {
+                return true
             }
-            return result
+            return false
         }
 
         fun animateView(view: View, toVisibility: Int, toAlpha: Float, duration: Int) {

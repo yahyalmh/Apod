@@ -45,7 +45,7 @@
                 android:layout_height="200dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="4dp"
+                android:layout_marginBottom="2dp"
                 android:visibility="@{type.equals(MediaType.VIDEO.type) ? View.VISIBLE : View.INVISIBLE}"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,16 +72,6 @@
                 android:src="@drawable/ic_new"
                 android:visibility="@{isNew ? View.VISIBLE : View.GONE}" />
 
-            <com.yaya.apod.ui.component.FavoriteImageView
-                android:id="@+id/favoriteImgView"
-                android:layout_width="51dp"
-                android:layout_height="48dp"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="4dp"
-                android:contentDescription="@string/image_description"
-                android:padding="8dp"
-                android:src="@{isFavorite ? @drawable/ic_favorite : @drawable/ic_not_favorite}" />
-
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/loading"
                 android:layout_width="50dp"
@@ -99,15 +89,32 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageImgView"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:fontFamily="@font/ubuntumono_bold_italic"
                 android:gravity="center"
-                android:lines="4"
+                android:lines="3"
                 android:textAlignment="center"
                 android:textColor="#455A64"
                 android:textSize="15sp"
                 tools:text="sample title" />
+
+            <RelativeLayout
+                android:id="@+id/content_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <com.yaya.apod.ui.component.FavoriteImageView
+                android:id="@+id/favoriteImgView"
+                android:layout_width="51dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="4dp"
+                android:contentDescription="@string/image_description"
+                android:padding="8dp"
+                android:src="@{isFavorite ? @drawable/ic_favorite : @drawable/ic_not_favorite}" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

@@ -21,6 +21,11 @@
         <variable
             name="callback"
             type="com.yaya.apod.ui.fragments.ApodDetailFragment.Callback" />
+
+
+        <variable
+            name="isLoading"
+            type="boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,16 +60,15 @@
                 app:titleEnabled="false"
                 app:toolbarId="@id/toolbar">
 
-
+<!--                type="@{viewModel.apod.mediaType}"-->
+<!--                videoUrl="@{viewModel.apod.url}"-->
                 <WebView
+                    android:layout_marginTop="10dp"
                     android:id="@+id/webView"
-                    type="@{viewModel.apod.mediaType}"
-                    videoUrl="@{viewModel.apod.url}"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="4dp"
                     android:visibility="@{viewModel.apod.mediaType.equals(MediaType.VIDEO.type) ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,6 +95,17 @@
                     app:menu="@menu/menu_apod_detail"
                     app:navigationIcon="@drawable/ic_back"
                     app:titleTextColor="?attr/colorOnSurface" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/loading"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true"
+                    android:indeterminateBehavior="repeat"
+                    android:indeterminateTint="@color/Apod_gray_50"
+                    android:layout_gravity="center"
+                    android:visibility="@{isLoading ? View.VISIBLE : View.GONE}" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
