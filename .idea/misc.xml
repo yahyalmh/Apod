@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.22552083333333334" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2230769230769231" />
         <entry key="app/src/main/res/drawable-v24/placeholder_image.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/driver.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.2125" />
@@ -13,6 +14,7 @@
         <entry key="app/src/main/res/drawable/ic_favorite.xml" value="0.2125" />
         <entry key="app/src/main/res/drawable/ic_grid_on.xml" value="0.2265625" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.2125" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2230769230769231" />
         <entry key="app/src/main/res/drawable/ic_share.xml" value="0.2265625" />
         <entry key="app/src/main/res/drawable/ic_wallpaper.xml" value="0.2265625" />
         <entry key="app/src/main/res/drawable/round_shape.xml" value="0.2125" />
@@ -34,6 +36,7 @@
         <entry key="app/src/main/res/menu/home_menu.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/menu/menu_apod_detail.xml" value="0.19635416666666666" />
         <entry key="app/src/main/res/menu/nav_menu.xml" value="0.19635416666666666" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2230769230769231" />
         <entry key="app/src/main/res/xml/provider_paths.xml" value="0.1" />
       </map>
     </option>
