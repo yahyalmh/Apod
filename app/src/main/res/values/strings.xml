@@ -20,6 +20,9 @@
     <string name="is_not_showing_video">No Video</string>
     <string name="downloaded">Image saved in pictures</string>
     <string name="download_failed">Failed to save image</string>
+    <string name="unable_download_video">We can not download youtube video for now, sorry</string>
+    <string name="success_download">File downloaded</string>
+    <string name="open_file">File saved in \'%1$s\' path, you can open file</string>
     <string name="try_again">Try again</string>
     <string name="menu_item_share">Share Image</string>
     <string name="home_content_description">Navigate to Home screen</string>
@@ -40,5 +43,7 @@
     <string name="set_both">Set both</string>
     <string name="stop_loading">Stop loading</string>
     <string name="stop">Stop</string>
+    <string name="file">Open file</string>
+    <string name="folder">Folder</string>
     <string name="wait_more">Wait more</string>
 </resources>

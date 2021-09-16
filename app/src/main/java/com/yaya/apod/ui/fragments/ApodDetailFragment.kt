@@ -252,8 +252,7 @@ class ApodDetailFragment : Fragment(), Target {
 
     private fun showRationalPermissionAlert() {
         val dialog = OptionalDialog.Builder(requireContext()).setIcon(R.drawable.ic_storage)
-            .setHint(getString(R.string.permission_request)).setSecondOption(
-                getString(R.string.ok),
+            .setHint(getString(R.string.permission_request)).setSecondOption(getString(R.string.ok),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
@@ -264,7 +263,8 @@ class ApodDetailFragment : Fragment(), Target {
                             )
                         )
                     }
-                }).setFirstOption(getString(R.string.cancel),
+                }).setFirstOption(
+                getString(R.string.cancel),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
@@ -291,7 +291,35 @@ class ApodDetailFragment : Fragment(), Target {
                 val wasSuccess =
                     imageBitmap!!.compress(CompressFormat.PNG, 100, FileOutputStream(file))
                 if (wasSuccess) {
-                    showSnackBar(R.string.downloaded)
+                    OptionalDialog.Builder(requireContext())
+                        .setMessage(getString(R.string.success_download))
+                        .setHint(String.format(getString(R.string.open_file), appDir.absolutePath))
+                        .setIcon(R.drawable.ic_download).setSecondOption(getString(R.string.file),
+                            object : OptionalDialog.OptionalDialogClickListener {
+                                override fun onClick(dialog: OptionalDialog) {
+                                    val intent = Intent()
+                                    intent.action = Intent.ACTION_VIEW
+                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    val uri = if (Build.VERSION.SDK_INT >= 24) {
+                                        FileProvider.getUriForFile(
+                                            activity!!,
+                                            BuildConfig.APPLICATION_ID + ".provider",
+                                            file
+                                        )
+                                    } else {
+                                        Uri.fromFile(file)
+                                    }
+                                    intent.setDataAndType(uri, "image/*")
+                                    startActivity(intent)
+                                    dialog.dismiss()
+                                }
+                            }).setFirstOption(getString(R.string.cancel),
+                            object : OptionalDialog.OptionalDialogClickListener {
+                                override fun onClick(dialog: OptionalDialog) {
+                                    dialog.dismiss()
+                                }
+                            }).show()
+
                 } else {
                     showSnackBar(R.string.download_failed)
                 }
@@ -311,8 +339,8 @@ class ApodDetailFragment : Fragment(), Target {
                 "${apod.title}.mp4"
             }
             val file = File(appDir, fileName)
-
-            startDownload(apod.url, Uri.fromFile(file))
+            showSnackBar(R.string.unable_download_video)
+//            startDownload(apod.url, Uri.fromFile(file))
         }
 
     }
@@ -453,8 +481,7 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun setBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
+        requireActivity().onBackPressedDispatcher.addCallback(this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (binding.progressOverlay.isShowed) {
@@ -523,8 +550,8 @@ class ApodDetailFragment : Fragment(), Target {
 
     private fun showPermissionErrorAlert() {
         val dialog = OptionalDialog.Builder(requireContext()).setIcon(R.drawable.ic_storage)
-            .setHint(getString(R.string.permission_setting_request)).setSecondOption(
-                getString(R.string.setting),
+            .setHint(getString(R.string.permission_setting_request))
+            .setSecondOption(getString(R.string.setting),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()
@@ -536,7 +563,8 @@ class ApodDetailFragment : Fragment(), Target {
                             Log.e("TAG", e.message!!)
                         }
                     }
-                }).setFirstOption(getString(R.string.cancel),
+                }).setFirstOption(
+                getString(R.string.cancel),
                 object : OptionalDialog.OptionalDialogClickListener {
                     override fun onClick(dialog: OptionalDialog) {
                         dialog.dismiss()

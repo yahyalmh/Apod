@@ -66,9 +66,12 @@ class OptionalDialog(context: Context) : AlertDialog(context) {
             }
         }
 
-        if (withCancelBtn) {
+        if (optionCount == 3) {
             // Locate the dialog at the bottom
             window!!.setGravity(Gravity.BOTTOM)
+        }
+        
+        if (withCancelBtn){
             addCancelButton()
         }
 
