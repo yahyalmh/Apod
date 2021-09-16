@@ -6,6 +6,7 @@ import androidx.room.*
 import com.yaya.apod.data.model.Apod
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface ApodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -40,6 +41,9 @@ interface ApodDao {
 
     @Query("SELECT * FROM apod where favorite=1 order by date desc")
     fun getFavorite(): LiveData<MutableList<Apod>>
+
+    @Query("SELECT * FROM apod where favorite=1 and media_type=:type order by date desc")
+    fun getFavoriteByType(type: String): LiveData<MutableList<Apod>>
 
     @Query("SELECT * FROM apod where id==:id")
     fun getById(id: Int): LiveData<Apod>

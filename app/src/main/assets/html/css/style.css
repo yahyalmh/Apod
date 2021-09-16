@@ -60,13 +60,13 @@ body {
   text-transform: uppercase;
   margin-top: 0;
 }
-.notfound error_title {
+.notfound .error_title {
   font-family: 'Montserrat', sans-serif;
   color: #000;
   font-size: 24px;
   font-weight: 700;
   text-transform: uppercase;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 .notfound p {

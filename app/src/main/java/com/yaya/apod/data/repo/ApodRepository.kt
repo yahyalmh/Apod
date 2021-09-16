@@ -5,6 +5,7 @@ import androidx.lifecycle.asLiveData
 import com.yaya.apod.AppExecutors
 import com.yaya.apod.api.ApiResponse
 import com.yaya.apod.api.ApodApi
+import com.yaya.apod.api.MediaType
 import com.yaya.apod.data.db.AppDatabase
 import com.yaya.apod.data.db.dao.ApodDao
 import com.yaya.apod.data.model.Apod
@@ -76,6 +77,10 @@ class ApodRepository @Inject constructor(
 
     fun getFavorite(): LiveData<MutableList<Apod>> {
         return apodDao.getFavorite()
+    }
+
+    fun getFavoritesBytType(type: String): LiveData<MutableList<Apod>> {
+        return apodDao.getFavoriteByType(type)
     }
 
     fun getApodLiveData(apodId: String): LiveData<Apod> {

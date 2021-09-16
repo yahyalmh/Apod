@@ -16,6 +16,8 @@
     <string name="InternetUnavailable">Internet is not available, check your connection and retry</string>
     <string name="menu_item_set_wall">Set Wallpaper</string>
     <string name="menu_item_download">Download</string>
+    <string name="is_showing_video">Video</string>
+    <string name="is_not_showing_video">No Video</string>
     <string name="downloaded">Image saved in pictures</string>
     <string name="download_failed">Failed to save image</string>
     <string name="try_again">Try again</string>

@@ -93,6 +93,7 @@
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:text="@string/no_favorite_error"
             android:visibility="@{isFavorite ? View.VISIBLE : View.INVISIBLE}" />
 
         <ImageView

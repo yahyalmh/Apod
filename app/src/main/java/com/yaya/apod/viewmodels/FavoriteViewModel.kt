@@ -2,6 +2,7 @@ package com.yaya.apod.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yaya.apod.api.MediaType
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.data.repo.ApodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

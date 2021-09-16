@@ -15,17 +15,20 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yaya.apod.DefaultConfig
 import com.yaya.apod.R
+import com.yaya.apod.api.MediaType
 import com.yaya.apod.data.model.Apod
 import com.yaya.apod.databinding.FragmentHomeBinding
 import com.yaya.apod.ui.adapters.MediaAdapter
 import com.yaya.apod.ui.adapters.MediaLoadStateAdapter
 import com.yaya.apod.ui.adapters.holders.ApodViewHolder
 import com.yaya.apod.ui.component.OptionalDialog
+import com.yaya.apod.ui.component.SharedPreferenceBooleanLiveData
 import com.yaya.apod.ui.component.VerticalSpaceItemDecoration
 import com.yaya.apod.util.AndroidUtils
 import com.yaya.apod.util.Constants
@@ -33,6 +36,7 @@ import com.yaya.apod.viewmodels.ApodViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -67,20 +71,7 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.apods().collectLatest {
-                    adapter.submitData(it)
-                }
-            }
-        }
-
-        adapter.addLoadStateListener {
-            if (adapter.itemCount >= 1) {
-                binding!!.isError = false
-            }
-        }
-
+        collectApods()
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.distinctUntilChanged { old, new ->
@@ -106,16 +97,59 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (binding!!.listView.layoutManager!! as LinearLayoutManager).scrollToPositionWithOffset(
-            lastFirstVisiblePosition, 0
+    private fun collectApods() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            SharedPreferenceBooleanLiveData(
+                sharedPreferences, Constants.VIDEO_SHOW_SHARED_KEY, true
+            ).observe(viewLifecycleOwner) { isShowingVideo ->
+                val videoItem = binding!!.toolbar.menu.findItem(R.id.video_item)
+                if (isShowingVideo) {
+                    videoItem.icon =
+                        AppCompatResources.getDrawable(requireContext(), R.drawable.ic_video)
+                    videoItem.title = getString(R.string.is_showing_video)
+                } else {
+                    videoItem.icon =
+                        AppCompatResources.getDrawable(requireContext(), R.drawable.ic_video_off)
+                    videoItem.title = getString(R.string.is_not_showing_video)
+                }
+                viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                    viewModel.apods().map { apods ->
+                        apods.filter { apod ->
+                            if (isShowingVideo) {
+                                true
+                            } else {
+                                apod.mediaType != MediaType.VIDEO.type
+                            }
+                        }
+                    }.collectLatest { adapter.submitData(it) }
+                }
+            }
+        }
+    }
+
+    private fun observeLayoutManagerType() {
+        val isGridLayoutManagerSharedLiveData = SharedPreferenceBooleanLiveData(
+            sharedPreferences, Constants.LAYOUT_TYPE_SHARED_KEY, false
         )
+        isGridLayoutManagerSharedLiveData.observe(viewLifecycleOwner) { isGridLayoutManager ->
+            if (isGridLayoutManager) {
+                binding!!.toolbar.menu.findItem(R.id.grid_item).icon =
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
+                binding!!.listView.layoutManager =
+                    GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+            } else {
+                binding!!.listView.layoutManager = LinearLayoutManager(activity)
+                binding!!.toolbar.menu.findItem(R.id.grid_item).icon =
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
+            }
+            binding!!.listView.adapter = adapter
+            binding!!.needUpKey = false
+        }
     }
 
     private fun setErrorState(loadStates: CombinedLoadStates) {
         binding!!.swipeRefresh.isRefreshing = false
-        if (binding!!.listView.adapter!!.itemCount <= 0){
+        if (binding!!.listView.adapter!!.itemCount <= 0) {
             binding!!.isError = true
         }
         binding!!.isLoading = false
@@ -152,10 +186,11 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         //  restores the RecyclerView state only when the adapter is not empty (adapter.getItemCount() > 0)
         adapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-
-//        viewModel.apods().map { apods ->
-//            apods.filter { apod -> apod.mediaType == MediaType.VIDEO.type }
-//        }
+        adapter.addLoadStateListener {
+            if (adapter.itemCount >= 1) {
+                binding!!.isError = false
+            }
+        }
     }
 
     private fun initRecyclerView() {
@@ -167,11 +202,7 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
             )
         )
 
-        setRecyclerViewLayoutManager(
-            sharedPreferences.getBoolean(
-                Constants.LAYOUT_TYPE_SHARED_KEY, false
-            )
-        )
+        observeLayoutManagerType()
         binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
             header = MediaLoadStateAdapter(adapter), footer = MediaLoadStateAdapter(adapter)
         )
@@ -184,28 +215,6 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         })
     }
 
-    private fun setArrowUpKey() {
-        binding!!.needUpKey =
-            (binding!!.listView.layoutManager is GridLayoutManager && lastFirstVisiblePosition > 3) || (binding!!.listView.layoutManager is LinearLayoutManager && lastFirstVisiblePosition > 1)
-    }
-
-    private fun setRecyclerViewLayoutManager(isGridLayoutManager: Boolean) {
-        binding!!.listView.layoutManager = if (isGridLayoutManager) {
-            GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-        } else {
-            LinearLayoutManager(activity)
-        }
-        binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = MediaLoadStateAdapter(adapter), footer = MediaLoadStateAdapter(adapter)
-        )
-        sharedPreferences.edit().putBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, isGridLayoutManager)
-            .apply()
-        (binding!!.listView.layoutManager!! as LinearLayoutManager).scrollToPositionWithOffset(
-            lastFirstVisiblePosition, 0
-        )
-        setArrowUpKey()
-    }
-
     private fun initSwipeToRefresh() {
         binding!!.swipeRefresh.setOnRefreshListener { adapter.refresh() }
     }
@@ -216,18 +225,25 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         }
     }
 
+    private fun setArrowUpKey() {
+        binding!!.needUpKey =
+            (binding!!.listView.layoutManager is GridLayoutManager && lastFirstVisiblePosition > 3) || (binding!!.listView.layoutManager is LinearLayoutManager && lastFirstVisiblePosition > 1)
+    }
+
     private fun initToolbarMenu() {
         binding!!.toolbar.inflateMenu(R.menu.home_menu)
-        updateToolbar()
         binding!!.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.grid_item -> {
-                    if (binding!!.listView.layoutManager is GridLayoutManager) {
-                        setRecyclerViewLayoutManager(false)
-                    } else {
-                        setRecyclerViewLayoutManager(true)
-                    }
-                    updateToolbar()
+                    val isGridLayoutManager = binding!!.listView.layoutManager !is GridLayoutManager
+                    sharedPreferences.edit()
+                        .putBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, isGridLayoutManager).apply()
+                    true
+                }
+                R.id.video_item -> {
+                    val isShowingVideo = it.title == getString(R.string.is_not_showing_video)
+                    sharedPreferences.edit()
+                        .putBoolean(Constants.VIDEO_SHOW_SHARED_KEY, isShowingVideo).apply()
                     true
                 }
                 else -> {
@@ -237,16 +253,11 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         }
     }
 
-    private fun updateToolbar() {
-        val menu = binding!!.toolbar.menu
-        val isGridLayoutManager =
-            sharedPreferences.getBoolean(Constants.LAYOUT_TYPE_SHARED_KEY, false)
-
-        menu.findItem(R.id.grid_item).icon = if (isGridLayoutManager) {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_on)
-        } else {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
-        }
+    override fun onResume() {
+        super.onResume()
+        (binding!!.listView.layoutManager!! as LinearLayoutManager).scrollToPositionWithOffset(
+            lastFirstVisiblePosition, 0
+        )
     }
 
     override fun onPause() {
@@ -269,27 +280,4 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
         val actionHomeToDetail = HomeFragmentDirections.actionHomeToDetail(item.id.toString())
         findNavController().navigate(actionHomeToDetail)
     }
-
-/*    private fun subscribeUi(adapter: MediaAdapter) {
-        viewModel.contents.observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.LOADING -> {
-                    binding!!.isLoading = true
-                    binding!!.isError = false
-                }
-                Status.SUCCESS -> {
-                    adapter.submitData(it.data!!)
-                    binding!!.isLoading = false
-                    binding!!.isError = false
-                }
-                Status.ERROR -> {
-                    binding!!.isError = true
-                    binding!!.isLoading = false
-                    binding!!.errorTxtView.text = it.message
-                }
-            }
-            binding!!.invalidateAll()
-        }
-
-    }*/
 }

@@ -34,7 +34,7 @@ class FavoriteAdapter(private val delegate: ApodViewHolder.ItemDelegate) :
 
     @SuppressLint("NotifyDataSetChanged")
     fun submitData(data: MutableList<Apod>) {
-        this.data.clear()
+//        this.data.clear()
         this.data = data
         notifyDataSetChanged()
     }

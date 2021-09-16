@@ -1,10 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:icon="@drawable/ic_video"
+        android:id="@+id/video_item"
+        android:orderInCategory="1"
+        android:title="@string/is_showing_video"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/grid_item"
+        android:orderInCategory="2"
         android:title="@string/grid"
-        android:orderInCategory="10"
         app:showAsAction="ifRoom" />
 </menu>
