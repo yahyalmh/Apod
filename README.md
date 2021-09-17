@@ -25,28 +25,28 @@ An Android app to download the Nasa daily image and video
 <table  style="border: 1px solid black; width: 100%; word-wrap:break-word;
               table-layout: fixed; text-align:center" >
  <tr>
-    <td style="text-align:center">Home fragment</td>
-     <td style="text-align:center">Favorite fragment</td>
-     <td style="text-align:center">Image detail fragment</td>
-      <td style="text-align:center">Video detail fragment</td>
+    <td align="center" valign="center">Home fragment</td>
+     <td align="center" valign="center">Favorite fragment</td>
+     <td align="center" valign="center">Image detail fragment</td>
+      <td align="center" valign="center">Video detail fragment</td>
   </tr>
   <tr>
-    <td style="text-align:center"><img src="screenshots/home_fragment_view.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/favorite_fragment_view.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/image_detail_view.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/video_detail_view.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/home_fragment_view.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/favorite_fragment_view.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/image_detail_view.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/video_detail_view.png" width=200 height=400></td>
   </tr>
   <tr>
-    <td style="text-align:center">Set wallpaper dialog</td>
-     <td style="text-align:center">Open downloaded file dialog </td>
-     <td style="text-align:center">Share Image or video's link view</td>
-      <td style="text-align:center">YouTube unavailable and retry page</td>
+    <td align="center" valign="center">Set wallpaper dialog</td>
+     <td align="center" valign="center">Open downloaded file dialog </td>
+     <td align="center" valign="center">Share Image or video's link view</td>
+      <td align="center" valign="center">YouTube unavailable and retry page</td>
   </tr>
   <tr>
-    <td style="text-align:center"><img src="screenshots/set_wallpaper_dialog.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/open_file_dialog.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/share_view.png" width=200 height=400></td>
-    <td style="text-align:center"><img src="screenshots/youtube_error_page.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/set_wallpaper_dialog.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/open_file_dialog.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/share_view.png" width=200 height=400></td>
+    <td align="center" valign="center"><img src="screenshots/youtube_error_page.png" width=200 height=400></td>
   </tr>
  </table>
 <!-- ![Home Fragment](screenshots/home_fragment_view.png "A list of Apods")
