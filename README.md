@@ -9,15 +9,17 @@ An Android app to download the Nasa daily image and video
  
 * [Screenshots](#Screenshots)
 
+* [App Gif](#App-Gif)
+
 * [To Do](#To-Do)
 
 ## Introduction
  Nasa releases images and videos daily, and there is an API for that. This app uses that API to fetch photos and videos, and you can see an infinite list of them, watch videos, download images, set images as wallpaper, or choose your favorites. 
 
 ## Technologies 
-* UI: Sigle activity, Fragments, Custom components, Animation, Lottie files
+* UI: Single activity, Fragments, Custom components, Animation, Lottie files
 * Architecture: MVVM, Hilt, LiveData, Flow, Room, ViewModel, Paging, Navigation, Lifecycle, DataBinding, ViewBinding, Provider
-* Network: Retrofit
+* Third Libs: Retrofit, Picasso, Gson
 * Foundation: Kotlin, AndroidX, AppCompat
 * Behavior: Permission, DownloadManager, Sharing, Set Wallpaper, Swipe to refresh, Retry, ...
 
@@ -49,13 +51,12 @@ An Android app to download the Nasa daily image and video
     <td align="center" valign="center"><img src="screenshots/youtube_error_page.png" width=200 height=400></td>
   </tr>
  </table>
-<!-- ![Home Fragment](screenshots/home_fragment_view.png "A list of Apods")
-![Favorite Fragment](screenshots/favorite_fragment_view.png "List of favorite Apods")
-![Image Detail](screenshots/image_detail_view.png "An image detail page")
-![Image Detail](screenshots/video_detail_view.png "An video detail page") -->
+
+ ## App Gif
+<img src="screenshots/app_running.gif" width="270" height="480" />
 
 ## To Do
  * Add setting page
-      * language 
-      * schedule changing wallpaper(via WorkManger)
+      * Language 
+      * Schedule changing wallpaper(via WorkManger)
  * Open videos in youtube
