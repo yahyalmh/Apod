@@ -142,7 +142,9 @@ class HomeFragment : Fragment(), ApodViewHolder.ItemDelegate {
                 binding!!.toolbar.menu.findItem(R.id.grid_item).icon =
                     AppCompatResources.getDrawable(requireContext(), R.drawable.ic_grid_off)
             }
-            binding!!.listView.adapter = adapter
+            binding!!.listView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = MediaLoadStateAdapter(adapter), footer = MediaLoadStateAdapter(adapter)
+            )
             binding!!.needUpKey = false
         }
     }

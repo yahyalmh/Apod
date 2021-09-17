@@ -87,12 +87,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/no_favorite"
-            android:layout_margin="10dp"
-            android:fontFamily="@font/ubuntumono_regular"
-            android:padding="3dp"
+            android:layout_margin="15dp"
+            android:padding="5dp"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:text="@string/no_favorite_error"
             android:visibility="@{isFavorite ? View.VISIBLE : View.INVISIBLE}" />
 
