@@ -21,7 +21,7 @@ An Android app to download the Nasa daily image and video
 * Architecture: MVVM, Hilt, LiveData, Flow, Room, ViewModel, Paging, Navigation, Lifecycle, DataBinding, ViewBinding, Provider
 * Third Libs: Retrofit, Picasso, Gson
 * Foundation: Kotlin, AndroidX, AppCompat
-* Behavior: Permission, DownloadManager, Sharing, Set Wallpaper, Swipe to refresh, Retry, ...
+* Behavior: Permission, DownloadManager,Offline database, Sharing, Set Wallpaper, Swipe to refresh, Retry, ...
 
 ## Screenshot
 <table  style="border: 1px solid black; width: 100%; word-wrap:break-word;
