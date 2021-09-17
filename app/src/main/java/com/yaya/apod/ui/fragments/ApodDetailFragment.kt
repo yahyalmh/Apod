@@ -512,7 +512,7 @@ class ApodDetailFragment : Fragment(), Target {
                 allAreGranted = allAreGranted && b
             }
 
-            if (allAreGranted) {
+            if (allAreGranted || result[Manifest.permission.READ_EXTERNAL_STORAGE]!!) {
                 saveContentToPath()
             }
         }
