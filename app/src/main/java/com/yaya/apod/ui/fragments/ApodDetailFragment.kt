@@ -54,6 +54,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.Normalizer
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -274,6 +276,15 @@ class ApodDetailFragment : Fragment(), Target {
     }
 
     private fun saveContentToPath() {
+        val reservedChars = "[|\\<\":>+\\[]/']"
+        var fileName = if ( apod.title.length > 20) {
+            apod.title.substring(0, 20).lowercase(Locale.getDefault())
+        } else {
+            apod.title.lowercase(Locale.getDefault())
+        }
+        fileName = Normalizer.normalize(fileName, Normalizer.Form.NFD)
+        fileName = fileName.replace(Regex("[^a-zA-Z0-9]"), " ")
+
         if (apod.mediaType == MediaType.IMAGE.type) {
             val pictureDir =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
@@ -281,12 +292,8 @@ class ApodDetailFragment : Fragment(), Target {
             if (!appDir.exists()) {
                 appDir.mkdirs()
             }
-            val fileName = if (apod.title.length > 20) {
-                "${apod.title.substring(0, 20)}.jpg"
-            } else {
-                "${apod.title}.jpg"
-            }
-            val file = File(appDir, fileName)
+
+            val file = File(appDir, "${fileName}.jpg")
             if (imageBitmap != null) {
                 val wasSuccess =
                     imageBitmap!!.compress(CompressFormat.PNG, 100, FileOutputStream(file))
@@ -333,12 +340,7 @@ class ApodDetailFragment : Fragment(), Target {
             if (!appDir.exists()) {
                 appDir.mkdirs()
             }
-            val fileName = if (apod.title.length > 20) {
-                "${apod.title.substring(0, 20)}.mp4"
-            } else {
-                "${apod.title}.mp4"
-            }
-            val file = File(appDir, fileName)
+            val file = File(appDir, "${fileName}.mp4")
             showSnackBar(R.string.unable_download_video)
 //            startDownload(apod.url, Uri.fromFile(file))
         }
