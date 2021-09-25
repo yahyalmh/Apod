@@ -20,8 +20,8 @@ An Android app to download the Nasa daily image and video
 * UI: Single activity, Fragments, Custom components, Animation, Lottie files
 * Architecture: MVVM, Hilt, LiveData, Flow, Room, ViewModel, Paging, Navigation, Lifecycle, DataBinding, ViewBinding, Provider
 * Third Libs: Retrofit, Picasso, Gson
-* Foundation: Kotlin, AndroidX, AppCompat
-* Behavior: Permission, DownloadManager, Sharing, Set Wallpaper, Swipe to refresh, Retry, ...
+* Foundation: Kotlin, KTX, AndroidX, AppCompat
+* Behavior: Permission, DownloadManager,Offline database, Sharing, Set Wallpaper, Swipe to refresh, Retry, ...
 
 ## Screenshot
 <table  style="border: 1px solid black; width: 100%; word-wrap:break-word;
